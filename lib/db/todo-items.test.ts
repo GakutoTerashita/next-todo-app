@@ -13,34 +13,49 @@ vi.mock('@/lib/prisma', () => ({
 const mockFindMany = vi.mocked(prisma.todo_item.findMany);
 
 describe('dbFetchAllTodoItems', () => {
-    beforeEach(() => {
-        vi.clearAllMocks();
-        mockFindMany.mockReset();
-    });
+    describe('success case', () => {
+        beforeEach(() => {
+            vi.clearAllMocks();
+            mockFindMany.mockReset();
+        });
 
-    it('fetches all todo items from the database', async () => {
-        const mockTodoItems = [
-            {
-                id: '1',
-                title: 'Test Todo 1',
-                description: 'Description 1',
-                deadline: null,
-                completed: false,
-            },
-            {
-                id: '2',
-                title: 'Test Todo 2',
-                description: 'Description 2',
-                deadline: null,
-                completed: true,
-            },
-        ];
+        it('fetches all todo items from the database', async () => {
+            const mockTodoItems = [
+                {
+                    id: '1',
+                    title: 'Test Todo 1',
+                    description: 'Description 1',
+                    deadline: null,
+                    completed: false,
+                },
+                {
+                    id: '2',
+                    title: 'Test Todo 2',
+                    description: 'Description 2',
+                    deadline: null,
+                    completed: true,
+                },
+            ];
 
-        mockFindMany.mockResolvedValue(mockTodoItems);
+            mockFindMany.mockResolvedValue(mockTodoItems);
 
-        const todoItems = await dbFetchAllTodoItems();
+            const todoItems = await dbFetchAllTodoItems();
 
-        expect(todoItems).toEqual(mockTodoItems);
-        expect(mockFindMany).toHaveBeenCalledTimes(1);
+            expect(todoItems).toEqual(mockTodoItems);
+            expect(mockFindMany).toHaveBeenCalledTimes(1);
+        });
+    })
+
+    describe('failure case', () => {
+        beforeEach(() => {
+            vi.clearAllMocks();
+        });
+
+        it('throws an error when database query fails', async () => {
+            mockFindMany.mockRejectedValue(new Error("Database error"));
+
+            await expect(dbFetchAllTodoItems()).rejects.toThrow("Database error");
+            expect(mockFindMany).toHaveBeenCalledTimes(1);
+        });
     });
 });
