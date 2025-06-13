@@ -1,6 +1,6 @@
 import { dbFetchAllTodoItems } from '@/lib/db/todo-items';
 import { todo_item } from '@prisma/client';
-import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { GET } from './route';
 
 vi.mock('@/lib/db/todo-items', () => ({
