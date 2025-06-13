@@ -41,4 +41,22 @@ describe('GET /api/todo-items', () => {
             expect(mockDbFetchAllTodoItems).toHaveBeenCalledTimes(1);
         });
     });
-})
+
+    describe('failure case', () => {
+        const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => { });
+        beforeEach(() => {
+            vi.clearAllMocks();
+            consoleErrorSpy.mockClear();
+        });
+
+        it('respond with 500 on error', async () => {
+            mockDbFetchAllTodoItems.mockRejectedValue(new Error("Database error"));
+            const response = await GET();
+            const body = await response.json();
+
+            expect(response.status).toBe(500);
+            expect(body).toEqual({ error: "Failed to fetch todo items" });
+            expect(mockDbFetchAllTodoItems).toHaveBeenCalledTimes(1);
+        });
+    });
+});
