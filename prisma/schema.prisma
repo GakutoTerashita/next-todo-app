@@ -8,8 +8,9 @@ datasource db {
 }
 
 model todo_item {
-    id          String   @id @default(uuid())
+    id          String    @id @default(uuid())
     title       String
-    description String?  @db.Text
-    deadline    DateTime
+    description String?   @db.Text
+    deadline    DateTime?
+    completed   Boolean   @default(false)
 }
