@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "vitest"
+    "test": "vitest",
+    "db:migrate": "dotenv -e .env.local -- prisma migrate dev"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -25,6 +26,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^4.5.2",
+    "dotenv-cli": "^8.0.0",
     "jsdom": "^26.1.0",
     "prisma": "^6.9.0",
     "typescript": "^5",
