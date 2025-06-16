@@ -1,5 +1,4 @@
 import { dbCreateTodoItem, dbFetchAllTodoItems } from "@/lib/db/todo-items";
-import { todo_item } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 // GET returns all todo items
