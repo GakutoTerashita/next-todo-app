@@ -1,5 +1,6 @@
+import ItemRegistrationForm from "@/components/ItemRegistrationForm";
 import TodoList from "@/components/TodoList";
-import { Container } from "@mui/material";
+import { Container, Paper } from "@mui/material";
 
 export default function Home() {
   const items = [
@@ -22,7 +23,12 @@ export default function Home() {
 
   return (
     <Container maxWidth="lg">
-      <TodoList items={items} />
+      <Paper elevation={3} sx={{ padding: 1, marginTop: 2, marginBottom: 2 }}>
+        <TodoList items={items} />
+      </Paper>
+      <Paper elevation={3} sx={{ padding: 2 }}>
+        <ItemRegistrationForm />
+      </Paper>
     </Container>
   );
 }
