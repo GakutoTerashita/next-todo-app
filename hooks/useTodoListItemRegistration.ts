@@ -5,7 +5,9 @@ import { todo_item } from "@prisma/client";
 import { Dayjs } from "dayjs";
 import { useState } from "react";
 
-const useTodoListItemRegistration = () => {
+const useTodoListItemRegistration = (
+    onRegistered?: () => void
+) => {
     const [loading, setLoading] = useState(false);
 
     const register = async (
@@ -25,6 +27,7 @@ const useTodoListItemRegistration = () => {
         try {
             const result = await registerTodoItem(newTodoItem);
             setLoading(false);
+            onRegistered?.();
             return result;
         } catch (error) {
             console.error("Failed to register todo item:", error);
