@@ -83,7 +83,6 @@ describe('dbCreateTodoItem', () => {
                 title: 'Test Todo',
                 description: 'Description',
                 deadline: null,
-                completed: false,
             });
 
             expect(todoItem).toEqual(mockTodoItem);
@@ -93,7 +92,6 @@ describe('dbCreateTodoItem', () => {
                     title: 'Test Todo',
                     description: 'Description',
                     deadline: null,
-                    completed: false,
                 },
             });
         });
@@ -111,7 +109,6 @@ describe('dbCreateTodoItem', () => {
                 title: 'Test Todo',
                 description: 'Description',
                 deadline: null,
-                completed: false,
             })).rejects.toThrow("Database error");
 
             expect(mockCreate).toHaveBeenCalledTimes(1);
