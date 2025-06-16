@@ -1,6 +1,8 @@
 import { todo_item } from "@prisma/client";
 
-export const registerTodoItem = async (item: Omit<todo_item, 'id' | 'completed'>) => {
+export const registerTodoItem = async (
+    item: Omit<todo_item, 'id' | 'completed'>
+): Promise<todo_item> => {
     const response = await fetch('/api/todo-items', {
         method: 'POST',
         headers: {
@@ -13,5 +15,8 @@ export const registerTodoItem = async (item: Omit<todo_item, 'id' | 'completed'>
         throw new Error('Failed to register todo item');
     }
 
-    return await response.json();
+    return await response.json().catch((error) => {
+        console.error("Failed to parse response:", error);
+        throw new Error('Failed to parse response from server');
+    });
 }
