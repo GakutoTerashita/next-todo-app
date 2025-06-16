@@ -6,13 +6,12 @@ export const dbFetchAllTodoItems = async (): Promise<todo_item[]> => {
     return todoItems;
 }
 
-export const dbCreateTodoItem = async (data: Omit<todo_item, 'id'>): Promise<todo_item> => {
+export const dbCreateTodoItem = async (data: Omit<todo_item, 'id' | 'completed'>): Promise<todo_item> => {
     const newTodoItem = await prisma.todo_item.create({
         data: {
             title: data.title,
             description: data.description,
             deadline: data.deadline,
-            completed: data.completed,
         },
     });
     return newTodoItem;
