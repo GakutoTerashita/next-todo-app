@@ -19,7 +19,7 @@ const ItemRegistrationForm = () => {
         syncDescriptionInputField,
     } = useTodoListItemRegistrationForm();
 
-    const { loading, register, } = useTodoListItemRegistration(onRegistered);
+    const { loading, register } = useTodoListItemRegistration(onRegistered);
 
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
