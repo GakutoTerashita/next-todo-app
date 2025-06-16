@@ -86,7 +86,6 @@ describe('POST /api/todo-items', () => {
                     title: 'New Todo',
                     description: 'New Description',
                     deadline: null,
-                    completed: false,
                 }),
                 headers: { 'Content-Type': 'application/json' },
             });
@@ -116,7 +115,6 @@ describe('POST /api/todo-items', () => {
                     title: 'New Todo',
                     description: 'New Description',
                     deadline: null,
-                    completed: false,
                 }),
                 headers: { 'Content-Type': 'application/json' },
             });

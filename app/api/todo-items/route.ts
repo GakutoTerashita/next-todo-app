@@ -22,13 +22,11 @@ export const POST = async (request: NextRequest): Promise<NextResponse> => {
             title,
             description,
             deadline,
-            completed
         } = await request.json();
         const todoItem = await dbCreateTodoItem({
             title,
             description,
             deadline,
-            completed,
         });
         return NextResponse.json(todoItem);
     } catch (error) {
