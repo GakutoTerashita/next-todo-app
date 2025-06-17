@@ -63,31 +63,32 @@ const ItemRegistrationForm = () => {
 
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <TextField
-                type="text"
-                name="title"
-                placeholder="Enter item name"
-                value={title}
-                onChange={syncTitleInputField}
-            />
-            <TextField
-                type="text"
-                name="description"
-                placeholder="Enter item description"
-                value={description}
-                onChange={syncDescriptionInputField}
-            />
-            <DynamicDatePicker
-                value={deadline}
-                onChange={syncDeadlineInputField}
-            />
-            <Button
-                type="submit"
-                loading={loading}
-                onClick={(e) => handleFormSubmit(e, register, title, description, deadline)}
-            >
-                Add Item
-            </Button>
+            <form onSubmit={(e) => handleFormSubmit(e, register, title, description, deadline)}>
+                <TextField
+                    type="text"
+                    name="title"
+                    placeholder="Enter item name"
+                    value={title}
+                    onChange={syncTitleInputField}
+                />
+                <TextField
+                    type="text"
+                    name="description"
+                    placeholder="Enter item description"
+                    value={description}
+                    onChange={syncDescriptionInputField}
+                />
+                <DynamicDatePicker
+                    value={deadline}
+                    onChange={syncDeadlineInputField}
+                />
+                <Button
+                    type="submit"
+                    loading={loading}
+                >
+                    Add Item
+                </Button>
+            </form>
         </LocalizationProvider>
     );
 }
