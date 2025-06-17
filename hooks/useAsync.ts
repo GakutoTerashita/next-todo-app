@@ -6,8 +6,8 @@ type State<T> = {
     error: any,
 }
 
-const useAsync = <T>(
-    asyncFunction: () => Promise<T>,
+const useAutoFetch = <T>(
+    asyncFetchFunction: () => Promise<T>,
     onError?: (error: Error) => void,
 ) => {
     const initialState: State<T> = {
@@ -21,7 +21,7 @@ const useAsync = <T>(
     useEffect(() => {
         setState({ ...initialState, loading: true });
 
-        asyncFunction()
+        asyncFetchFunction()
             .then((data) => {
                 setState({ data, loading: false, error: undefined });
             })
@@ -32,9 +32,9 @@ const useAsync = <T>(
                 }
             });
 
-    }, [asyncFunction]);
+    }, [asyncFetchFunction]);
 
     return state;
 };
 
-export default useAsync;
+export default useAutoFetch;
