@@ -8,6 +8,7 @@ type State<T> = {
 
 const useAsync = <T>(
     asyncFunction: () => Promise<T>,
+    onError?: (error: Error) => void,
 ) => {
     const initialState: State<T> = {
         data: undefined,
@@ -26,6 +27,9 @@ const useAsync = <T>(
             })
             .catch((error) => {
                 setState({ data: undefined, loading: false, error });
+                if (onError) {
+                    onError(error);
+                }
             });
 
     }, [asyncFunction]);
