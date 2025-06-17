@@ -1,7 +1,7 @@
 'use client';
 
 import { fetchTodoItems } from "@/lib/api/todo-items";
-import useAutoFetch from "./useAsync";
+import useAutoFetch from "./useAutoFetch";
 
 const useTodoListItemList = () => {
     const {

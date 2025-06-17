@@ -18,7 +18,7 @@ const DynamicDatePicker = dynamic(
 
 const handleRegistrationFormSubmit = async (
     e: React.FormEvent,
-    register: (title: string, description: string, deadline: Dayjs | null) => Promise<todo_item>,
+    executeRegistration: (itemToRegister: Omit<todo_item, "id" | "completed">) => void,
     title: string,
     description: string,
     deadline: Dayjs | null
@@ -30,12 +30,12 @@ const handleRegistrationFormSubmit = async (
         return;
     }
 
-    try {
-        const result = await register(title, description, deadline);
-        console.log("Item registered successfully:", result);
-    } catch (error) {
-        console.error("Failed to register item:", error);
-    }
+    const newItem: Omit<todo_item, "id" | "completed"> = {
+        title,
+        description: description || "",
+        deadline: deadline?.toDate() || null,
+    };
+    executeRegistration(newItem);
 };
 
 const ItemRegistrationForm = () => {
@@ -55,7 +55,7 @@ const ItemRegistrationForm = () => {
         resetValue: resetDeadlineInputField
     } = useDatePicker();
 
-    const { loading, register } = useTodoListItemRegistration(() => {
+    const { registeredTodoItem, loading, executeRegistration } = useTodoListItemRegistration(() => {
         resetTitleInputField();
         resetDescriptionInputField();
         resetDeadlineInputField();
@@ -63,7 +63,7 @@ const ItemRegistrationForm = () => {
 
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <form onSubmit={(e) => handleRegistrationFormSubmit(e, register, title, description, deadline)}>
+            <form onSubmit={(e) => handleRegistrationFormSubmit(e, executeRegistration, title, description, deadline)}>
                 <TextField
                     type="text"
                     name="title"
