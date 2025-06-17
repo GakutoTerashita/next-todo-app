@@ -10,16 +10,14 @@ const useAutoFetch = <T>(
     asyncFetchFunction: () => Promise<T>,
     onError?: (error: Error) => void,
 ) => {
-    const initialState: State<T> = {
+    const [state, setState] = useState<State<T>>({
         data: undefined,
         loading: false,
         error: undefined,
-    }
-
-    const [state, setState] = useState<State<T>>(initialState);
+    });
 
     useEffect(() => {
-        setState({ ...initialState, loading: true });
+        setState({ ...state, loading: true });
 
         asyncFetchFunction()
             .then((data) => {
