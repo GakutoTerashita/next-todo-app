@@ -8,9 +8,14 @@ const useDatePicker = () => {
         setValue(newValue);
     };
 
+    const resetValue = () => {
+        setValue(null);
+    };
+
     return {
         value,
         syncValue,
+        resetValue,
     };
 };
 
