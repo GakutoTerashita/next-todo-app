@@ -1,5 +1,4 @@
 import { Button } from "@mui/material";
-import { todo_item } from "@prisma/client";
 import React from "react";
 
 interface Props {
