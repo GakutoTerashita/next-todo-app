@@ -8,35 +8,11 @@ import React from "react";
 import dynamic from "next/dynamic";
 import useTextField from "@/hooks/useTextField";
 import useDatePicker from "@/hooks/useDatePicker";
-import { Dayjs } from "dayjs";
-import { todo_item } from "@prisma/client";
 
 const DynamicDatePicker = dynamic(
     () => import("@mui/x-date-pickers/DatePicker").then((mod) => mod.DatePicker),
     { ssr: false }
 );
-
-const handleRegistrationFormSubmit = async (
-    e: React.FormEvent,
-    executeRegistration: (itemToRegister: Omit<todo_item, "id" | "completed">) => void,
-    title: string,
-    description: string,
-    deadline: Dayjs | null
-) => {
-    e.preventDefault();
-
-    if (!title) {
-        alert("Please fill in the title");
-        return;
-    }
-
-    const newItem: Omit<todo_item, "id" | "completed"> = {
-        title,
-        description: description || "",
-        deadline: deadline?.toDate() || null,
-    };
-    executeRegistration(newItem);
-};
 
 const ItemRegistrationForm = () => {
     const {
@@ -63,7 +39,18 @@ const ItemRegistrationForm = () => {
 
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <form onSubmit={(e) => handleRegistrationFormSubmit(e, executeRegistration, title, description, deadline)}>
+            <form onSubmit={(e) => {
+                e.preventDefault();
+                if (!title) {
+                    alert("Please fill in the title");
+                    return;
+                }
+                executeRegistration({
+                    title,
+                    description: description || "",
+                    deadline: deadline ? deadline.toDate() : null,
+                });
+            }}>
                 <TextField
                     type="text"
                     name="title"
