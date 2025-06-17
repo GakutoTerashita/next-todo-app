@@ -16,7 +16,7 @@ const DynamicDatePicker = dynamic(
     { ssr: false }
 );
 
-const handleFormSubmit = async (
+const handleRegistrationFormSubmit = async (
     e: React.FormEvent,
     register: (title: string, description: string, deadline: Dayjs | null) => Promise<todo_item>,
     title: string,
@@ -63,7 +63,7 @@ const ItemRegistrationForm = () => {
 
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <form onSubmit={(e) => handleFormSubmit(e, register, title, description, deadline)}>
+            <form onSubmit={(e) => handleRegistrationFormSubmit(e, register, title, description, deadline)}>
                 <TextField
                     type="text"
                     name="title"
