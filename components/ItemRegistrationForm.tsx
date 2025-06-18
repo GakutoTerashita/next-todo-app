@@ -3,15 +3,9 @@
 import useTodoListItemRegistration from "@/hooks/useTodoListItemRegistration";
 import useTodoListItemRegistrationForm from "@/hooks/useTodoListItemRegistrationForm";
 import { Button, TextField } from "@mui/material";
-import { LocalizationProvider } from "@mui/x-date-pickers";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import React from "react";
-
-import dynamic from "next/dynamic";
-const DynamicDatePicker = dynamic(
-    () => import("@mui/x-date-pickers/DatePicker").then((mod) => mod.DatePicker),
-    { ssr: false }
-);
 
 const ItemRegistrationForm = () => {
     const {
@@ -43,10 +37,10 @@ const ItemRegistrationForm = () => {
                 value={description}
                 onChange={syncDescriptionInputField}
             />
-            <DynamicDatePicker
+            {/* <DatePicker
                 value={deadline}
                 onChange={syncDeadlineInputField}
-            />
+            /> */}
             <Button
                 type="submit"
                 loading={loading}

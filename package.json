@@ -11,12 +11,10 @@
     "db:migrate": "dotenv -e .env.local -- prisma migrate dev"
   },
   "dependencies": {
-    "@emotion/cache": "^11.14.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@fontsource/roboto": "^5.2.6",
     "@mui/material": "^7.1.1",
-    "@mui/material-nextjs": "^7.1.1",
     "@mui/x-date-pickers": "^8.5.2",
     "@prisma/client": "^6.9.0",
     "dayjs": "^1.11.13",
