@@ -12,12 +12,14 @@ interface Props {
 const TodoList = (props: Props) => {
     return (
         <List>
-            {props.items.map((item, index) => (
-                <React.Fragment key={item.id}>
-                    <TodoListItem item={item} />
-                    {index < props.items.length - 1 && <Divider component="li" sx={{ marginY: 2 }} />}
-                </React.Fragment>
-            ))}
+            {props.items.map((item, index) => {
+                return (
+                    <React.Fragment key={item.id}>
+                        <TodoListItem item={item} />
+                        {index < props.items.length - 1 && <Divider component="li" sx={{ marginY: 2 }} />}
+                    </React.Fragment>
+                );
+            })}
         </List>
     )
 };
