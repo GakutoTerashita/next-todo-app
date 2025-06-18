@@ -1,8 +1,12 @@
-import { render } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { cleanup, render } from "@testing-library/react";
+import { afterEach, describe, expect, it } from "vitest";
 import ItemRegistrationForm from "./ItemRegistrationForm";
 
 describe('ItemRegistrationForm', () => {
+    afterEach(() => {
+        cleanup();
+    });
+
     it('renders 2 input fields with placeholders', () => {
         const result = render(<ItemRegistrationForm />);
 
@@ -13,6 +17,7 @@ describe('ItemRegistrationForm', () => {
     it('renders a date picker', () => {
         const result = render(<ItemRegistrationForm />);
 
-        expect(result.getByRole('textbox', { name: 'deadline' }));
+        const datePicker = result.getByLabelText('deadline');
+        expect(datePicker.getAttribute('type')).toBe('date');
     });
 });

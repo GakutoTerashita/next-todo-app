@@ -1,12 +1,13 @@
 'use client';
 
 import { Button, TextField } from "@mui/material";
+import dayjs, { Dayjs } from "dayjs";
 import React from "react";
 
 const ItemRegistrationForm = () => {
     const [title, setTitle] = React.useState("");
     const [description, setDescription] = React.useState("");
-    const [deadline, setDeadline] = React.useState<Date | null>(null);
+    const [deadline, setDeadline] = React.useState<Dayjs | null>(null);
 
     return (
         <React.Fragment>
@@ -31,13 +32,12 @@ const ItemRegistrationForm = () => {
                     onChange={(e) => setDescription(e.target.value)}
                 />
                 <TextField
-                    type="datetime-local"
+                    type="date"
                     name="deadline"
-                    value={deadline || ""}
-                    onChange={(e) => setDeadline(new Date(e.target.value))}
-                >
-                    deadline
-                </TextField>
+                    label="deadline"
+                    value={deadline?.format("YYYY-MM-DD") || ""}
+                    onChange={(e) => setDeadline(e.target.value ? dayjs(e.target.value) : null)}
+                />
                 <Button
                     type="submit"
                 >
