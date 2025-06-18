@@ -7,14 +7,9 @@ const useTextField = () => {
         setValue(e.target.value);
     };
 
-    const resetValue = () => {
-        setValue("");
-    };
-
     return {
         value,
         syncValue,
-        resetValue,
     };
 };
 
