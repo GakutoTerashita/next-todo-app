@@ -11,14 +11,16 @@ const useFetch = <T, P>(
     onError?: (error: Error) => void,
     onRegistered?: () => void,
 ) => {
-    const [state, setState] = useState<State<T>>({
+    const initialState: State<T> = {
         data: undefined,
         loading: false,
         error: undefined,
-    });
+    }
+
+    const [state, setState] = useState<State<T>>(initialState);
 
     const executeFetch = (params: P) => {
-        setState({ ...state, loading: true });
+        setState({ ...initialState, loading: true });
 
         asyncFetchFunction(params)
             .then((data) => {
