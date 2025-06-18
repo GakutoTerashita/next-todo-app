@@ -4,38 +4,8 @@ import useTodoListItemRegistration from "@/hooks/useTodoListItemRegistration";
 import { Button, TextField } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { todo_item } from "@prisma/client";
 import { Dayjs } from "dayjs";
 import React, { useState } from "react";
-
-const handleSubmit = async (
-    e: React.FormEvent,
-    title: string,
-    description: string,
-    deadline: Dayjs | null,
-    register: (title: string, description: string, deadline: Dayjs | null) => Promise<todo_item>,
-    setTitle: (value: string) => void,
-    setDescription: (value: string) => void,
-    setDeadline: (value: Dayjs | null) => void
-) => {
-    e.preventDefault();
-
-    if (!title) {
-        alert("Please fill in the title");
-        return;
-    }
-
-    try {
-        const result = await register(title, description, deadline);
-        console.log("Item registered successfully:", result);
-        setTitle("");
-        setDescription("");
-        setDeadline(null);
-    } catch (error) {
-        console.error("Failed to register item:", error);
-    }
-};
-
 
 const ItemRegistrationForm = () => {
     const [title, setTitle] = useState("");
@@ -46,6 +16,25 @@ const ItemRegistrationForm = () => {
         loading,
         register,
     } = useTodoListItemRegistration();
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        if (!title) {
+            alert("Please fill in the title");
+            return;
+        }
+
+        try {
+            const result = await register(title, description, deadline);
+            console.log("Item registered successfully:", result);
+            setTitle("");
+            setDescription("");
+            setDeadline(null);
+        } catch (error) {
+            console.error("Failed to register item:", error);
+        }
+    };
 
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -67,22 +56,7 @@ const ItemRegistrationForm = () => {
                 value={deadline}
                 onChange={(newValue) => setDeadline(newValue)}
             />
-            <Button
-                type="submit"
-                loading={loading}
-                onClick={
-                    (e) => handleSubmit(
-                        e,
-                        title,
-                        description,
-                        deadline,
-                        register,
-                        setTitle,
-                        setDescription,
-                        setDeadline
-                    )}>
-                Add Item
-            </Button>
+            <Button type="submit" loading={loading} onClick={handleSubmit}>Add Item</Button>
         </LocalizationProvider>
     );
 }
