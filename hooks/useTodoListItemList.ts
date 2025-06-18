@@ -8,12 +8,7 @@ const useTodoListItemList = () => {
         data: fetchedTodoItems,
         loading,
         error,
-    } = useAsync(
-        fetchTodoItems,
-        (error) => {
-            console.error("Error fetching todo items:", error);
-        }
-    );
+    } = useAsync(fetchTodoItems);
 
     return {
         todoListItems: fetchedTodoItems || [],
