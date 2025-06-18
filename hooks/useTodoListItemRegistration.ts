@@ -2,29 +2,43 @@
 
 import { registerTodoItem } from "@/lib/api/todo-items";
 import { todo_item } from "@prisma/client";
-import useFetch from "./useFetch";
+import { Dayjs } from "dayjs";
+import { useState } from "react";
 
 const useTodoListItemRegistration = (
     onRegistered?: () => void
 ) => {
-    const {
-        data: registeredTodoItem,
-        loading,
-        error,
-        executeFetch,
-    } = useFetch<todo_item, Omit<todo_item, "id" | "completed">>(
-        registerTodoItem,
-        (error) => {
-            console.error("Error registering todo item:", error);
-        },
-        onRegistered,
-    )
+    const [loading, setLoading] = useState(false);
+
+    const register = async (
+        title: string,
+        description: string,
+        deadline: Dayjs | null
+    ): Promise<todo_item> => {
+
+        setLoading(true);
+
+        const newTodoItem: Omit<todo_item, "id" | "completed"> = {
+            title,
+            description,
+            deadline: deadline ? deadline.toDate() : null,
+        };
+
+        try {
+            const result = await registerTodoItem(newTodoItem);
+            setLoading(false);
+            onRegistered?.();
+            return result;
+        } catch (error) {
+            console.error("Failed to register todo item:", error);
+            setLoading(false);
+            throw error;
+        }
+    };
 
     return {
-        registeredTodoItem,
         loading,
-        error,
-        executeRegistration: executeFetch,
+        register,
     };
 };
 
