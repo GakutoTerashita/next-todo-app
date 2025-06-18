@@ -2,40 +2,35 @@
 
 import { registerTodoItem } from "@/lib/api/todo-items";
 import { todo_item } from "@prisma/client";
-import { Dayjs } from "dayjs";
 import { useState } from "react";
 
 const useTodoListItemRegistration = () => {
     const [loading, setLoading] = useState(false);
+    const [title, setTitle] = useState("");
+    const [description, setDescription] = useState("");
+    const [deadline, setDeadline] = useState<Date | null>(null);
 
-    const register = async (
-        title: string,
-        description: string,
-        deadline: Dayjs | null
-    ): Promise<todo_item> => {
-
+    const register = async (): Promise<todo_item> => {
         setLoading(true);
-
-        const newTodoItem: Omit<todo_item, "id" | "completed"> = {
+        const result = await registerTodoItem({
             title,
             description,
-            deadline: deadline ? deadline.toDate() : null,
-        };
-
-        try {
-            const result = await registerTodoItem(newTodoItem);
-            setLoading(false);
-            return result;
-        } catch (error) {
+            deadline,
+        }).catch((error) => {
             console.error("Failed to register todo item:", error);
             setLoading(false);
             throw error;
-        }
+        });
+        setLoading(false);
+        return result;
     };
 
     return {
         loading,
         register,
+        setTitle,
+        setDescription,
+        setDeadline,
     };
 };
 
