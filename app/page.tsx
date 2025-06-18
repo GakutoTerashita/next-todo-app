@@ -6,16 +6,12 @@ import useTodoListItemList from "@/hooks/useTodoListItemList";
 import { Container, Paper } from "@mui/material";
 
 export default function Home() {
-  const { todoListItems, loading } = useTodoListItemList();
+  const { todoListItems } = useTodoListItemList();
 
   return (
     <Container maxWidth="lg">
       <Paper elevation={3} sx={{ padding: 1, marginTop: 2, marginBottom: 2 }}>
-        {loading ? (
-          <div>Loading...</div>
-        ) : (
-          <TodoList items={todoListItems} />
-        )}
+        <TodoList items={todoListItems} />
       </Paper>
       <Paper elevation={3} sx={{ padding: 2 }}>
         <ItemRegistrationForm />
