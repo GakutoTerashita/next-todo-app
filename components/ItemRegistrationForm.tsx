@@ -17,20 +17,27 @@ const ItemRegistrationForm = () => {
                 <TextField
                     type="text"
                     name="title"
+                    label="title"
                     placeholder="Enter item name"
                     value={title}
-                    onChange={(e) => setTitle(e.target.value)} />
+                    onChange={(e) => setTitle(e.target.value)}
+                />
                 <TextField
                     type="text"
                     name="description"
+                    label="description"
                     placeholder="Enter item description"
                     value={description}
-                    onChange={(e) => setDescription(e.target.value)} />
+                    onChange={(e) => setDescription(e.target.value)}
+                />
                 <TextField
                     type="datetime-local"
                     name="deadline"
                     value={deadline || ""}
-                    onChange={(e) => setDeadline(new Date(e.target.value))} />
+                    onChange={(e) => setDeadline(new Date(e.target.value))}
+                >
+                    deadline
+                </TextField>
                 <Button
                     type="submit"
                 >
