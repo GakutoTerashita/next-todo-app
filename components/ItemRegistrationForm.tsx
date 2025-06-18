@@ -14,6 +14,9 @@ const handleSubmit = async (
     description: string,
     deadline: Dayjs | null,
     register: (title: string, description: string, deadline: Dayjs | null) => Promise<todo_item>,
+    setTitle: (value: string) => void,
+    setDescription: (value: string) => void,
+    setDeadline: (value: Dayjs | null) => void
 ) => {
     e.preventDefault();
 
@@ -25,6 +28,9 @@ const handleSubmit = async (
     try {
         const result = await register(title, description, deadline);
         console.log("Item registered successfully:", result);
+        setTitle("");
+        setDescription("");
+        setDeadline(null);
     } catch (error) {
         console.error("Failed to register item:", error);
     }
@@ -36,11 +42,10 @@ const ItemRegistrationForm = () => {
     const [description, setDescription] = useState("");
     const [deadline, setDeadline] = useState<Dayjs | null>(null);
 
-    const { loading, register, } = useTodoListItemRegistration(() => {
-        setTitle("");
-        setDescription("");
-        setDeadline(null);
-    });
+    const {
+        loading,
+        register,
+    } = useTodoListItemRegistration();
 
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -72,6 +77,9 @@ const ItemRegistrationForm = () => {
                         description,
                         deadline,
                         register,
+                        setTitle,
+                        setDescription,
+                        setDeadline
                     )}>
                 Add Item
             </Button>
