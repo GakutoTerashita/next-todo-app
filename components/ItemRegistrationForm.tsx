@@ -37,10 +37,10 @@ const ItemRegistrationForm = () => {
                 value={description}
                 onChange={syncDescriptionInputField}
             />
-            {/* <DatePicker
+            <DatePicker
                 value={deadline}
                 onChange={syncDeadlineInputField}
-            /> */}
+            />
             <Button
                 type="submit"
                 loading={loading}

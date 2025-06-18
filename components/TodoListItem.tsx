@@ -15,7 +15,7 @@ const TodoListItem = (props: Props) => (
                 <p>{props.item.description}</p>
             </div>
             <div>
-                <p>Deadline: {props.item.deadline && props.item.deadline.toString()}</p>
+                <p>Deadline: {props.item.deadline?.toISOString()}</p>
                 <ItemCtrlButtons completed={props.item.completed} id={props.item.id} />
             </div>
         </Stack>

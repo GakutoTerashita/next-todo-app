@@ -19,20 +19,4 @@ export const registerTodoItem = async (
         console.error("Failed to parse response:", error);
         throw new Error('Failed to parse response from server');
     });
-};
-
-export const fetchTodoItems = async (): Promise<todo_item[]> => {
-    const response = await fetch('/api/todo-items', {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    });
-    if (!response.ok) {
-        throw new Error('Failed to fetch todo items');
-    }
-    return await response.json().catch((error) => {
-        console.error("Failed to parse response:", error);
-        throw new Error('Failed to parse response from server');
-    });
-};
+}
