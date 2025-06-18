@@ -18,15 +18,18 @@ const ItemRegistrationForm = () => {
                     type="text"
                     name="title"
                     placeholder="Enter item name"
+                    value={title}
                     onChange={(e) => setTitle(e.target.value)} />
                 <TextField
                     type="text"
                     name="description"
                     placeholder="Enter item description"
+                    value={description}
                     onChange={(e) => setDescription(e.target.value)} />
                 <TextField
                     type="datetime-local"
                     name="deadline"
+                    value={deadline || ""}
                     onChange={(e) => setDeadline(new Date(e.target.value))} />
                 <Button
                     type="submit"
