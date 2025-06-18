@@ -1,14 +1,14 @@
 'use client';
 
 import { fetchTodoItems } from "@/lib/api/todo-items";
-import useAutoFetch from "./useAsync";
+import useAsync from "./useAsync";
 
 const useTodoListItemList = () => {
     const {
         data: fetchedTodoItems,
         loading,
         error,
-    } = useAutoFetch(
+    } = useAsync(
         fetchTodoItems,
         (error) => {
             console.error("Error fetching todo items:", error);
