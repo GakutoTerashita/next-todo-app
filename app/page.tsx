@@ -1,25 +1,25 @@
 import ItemRegistrationForm from "@/components/ItemRegistrationForm";
 import TodoList from "@/components/TodoList";
+import { getTodoItems } from "@/lib/api/todo-items";
 import { Container, Paper } from "@mui/material";
+import { todo_item } from "@prisma/client";
+import { useEffect, useState } from "react";
 
 export default function Home() {
-  const items = [
-    // Example items, replace with actual data fetching logic
-    {
-      id: '1',
-      title: "Sample Todo Item",
-      description: "This is a sample todo item.",
-      deadline: new Date(),
-      completed: false,
-    },
-    {
-      id: '2',
-      title: "Another Todo Item",
-      description: "This is another sample todo item.",
-      deadline: new Date(),
-      completed: true,
-    },
-  ];
+  const [items, setItems] = useState<todo_item[]>([]);
+
+  useEffect(() => {
+    const fetchItems = async () => {
+      try {
+        const result = await getTodoItems();
+        setItems(result);
+      } catch (error) {
+        console.error("Failed to fetch todo items:", error);
+      }
+    }
+
+    fetchItems();
+  }, []);
 
   return (
     <Container maxWidth="lg">
