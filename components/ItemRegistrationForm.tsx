@@ -1,5 +1,6 @@
 'use client';
 
+import { registerTodoItem } from "@/lib/api/todo-items";
 import { Button, TextField } from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
 import React from "react";
@@ -13,7 +14,18 @@ const ItemRegistrationForm = () => {
         <React.Fragment>
             <form onSubmit={async (e) => {
                 e.preventDefault();
-                // TODO
+
+                try {
+                    const result = await registerTodoItem({
+                        title,
+                        description,
+                        deadline: deadline?.toDate() || null,
+                    })
+                    console.log("Item registered successfully:", result);
+                } catch (error) {
+                    console.error("Failed to register item:", error);
+                }
+
             }}>
                 <TextField
                     type="text"
