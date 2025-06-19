@@ -12,12 +12,15 @@ vi.mock('@/lib/api/todo-items', () => ({
 const mockRegisterTodoItem = vi.mocked(registerTodoItem);
 
 describe('ItemRegistrationForm', () => {
+    const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => { });
+
     afterEach(() => {
         cleanup();
     });
 
     beforeEach(() => {
         mockRegisterTodoItem.mockClear();
+        consoleLogSpy.mockClear();
     });
 
     it('renders 2 input fields with placeholders', () => {
@@ -80,5 +83,32 @@ describe('ItemRegistrationForm', () => {
             description: 'This is a test item description.',
             deadline: expectedDate,
         });
+    });
+
+    it('clears input fields after successful registration', async () => {
+        const user = userEvent.setup();
+        const result = render(<ItemRegistrationForm />);
+
+        const titleInput = result.getByRole('textbox', { name: 'title' }) as HTMLInputElement;
+        const descriptionInput = result.getByRole('textbox', { name: 'description' }) as HTMLInputElement;
+        const datePicker = result.getByLabelText('deadline') as HTMLInputElement;
+        const submitButton = result.getByRole('button', { name: 'Add Item' });
+
+        mockRegisterTodoItem.mockResolvedValue({
+            id: '1',
+            title: 'Test Item',
+            description: 'This is a test item description.',
+            deadline: new Date(),
+            completed: false
+        });
+
+        await user.type(titleInput, 'Test Item');
+        await user.type(descriptionInput, 'This is a test item description.');
+        await user.type(datePicker, '2023-10-01');
+        await user.click(submitButton);
+
+        expect(titleInput.value).toBe('');
+        expect(descriptionInput.value).toBe('');
+        expect(datePicker.value).toBe('');
     });
 });

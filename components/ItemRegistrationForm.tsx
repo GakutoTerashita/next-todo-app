@@ -22,6 +22,9 @@ const ItemRegistrationForm = () => {
                         deadline: deadline?.toDate() || null,
                     })
                     console.log("Item registered successfully:", result);
+                    setTitle("");
+                    setDescription("");
+                    setDeadline(null);
                 } catch (error) {
                     console.error("Failed to register item:", error);
                 }
