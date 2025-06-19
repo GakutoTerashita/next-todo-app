@@ -1,4 +1,4 @@
-import { ListItem, Stack } from "@mui/material";
+import { ListItem, Stack, Button, Divider } from "@mui/material";
 import { todo_item } from "@prisma/client";
 import React from "react";
 import ItemCtrlButtons from "./ItemCtrlButtons";
@@ -15,7 +15,13 @@ const TodoListItem = (props: Props) => (
                 <p>{props.item.description}</p>
             </div>
             <div>
-                <p>Deadline: {props.item.deadline && props.item.deadline.toString()}</p>
+                <p>{
+                    props.item.deadline
+                        ?
+                        `Deadline: ${props.item.deadline.toISOString()}`
+                        :
+                        ""
+                }</p>
                 <ItemCtrlButtons completed={props.item.completed} id={props.item.id} />
             </div>
         </Stack>
