@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import ItemRegistrationForm from "./ItemRegistrationForm";
 import userEvent from "@testing-library/user-event";
 import { registerTodoItem } from "@/lib/api/todo-items";
+import dayjs from "dayjs";
 
 vi.mock('@/lib/api/todo-items', () => ({
     registerTodoItem: vi.fn()
@@ -59,11 +60,13 @@ describe('ItemRegistrationForm', () => {
         const datePicker = result.getByLabelText('deadline') as HTMLInputElement;
         const submitButton = result.getByRole('button', { name: 'Add Item' });
 
+        const expectedDate = dayjs('2023-10-01').toDate();
+
         mockRegisterTodoItem.mockResolvedValue({
             id: '1',
             title: 'Test Item',
             description: 'This is a test item description.',
-            deadline: new Date('2023-10-01T00:00:00Z'),
+            deadline: expectedDate,
             completed: false
         });
 
@@ -75,7 +78,7 @@ describe('ItemRegistrationForm', () => {
         expect(mockRegisterTodoItem).toHaveBeenCalledWith({
             title: 'Test Item',
             description: 'This is a test item description.',
-            deadline: new Date('2023-10-01T00:00:00Z')
+            deadline: expectedDate,
         });
     });
 });
