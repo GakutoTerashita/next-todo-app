@@ -12,15 +12,14 @@ vi.mock('@/lib/api/todo-items', () => ({
 const mockRegisterTodoItem = vi.mocked(registerTodoItem);
 
 describe('ItemRegistrationForm', () => {
-    const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => { });
+    beforeEach(() => {
+        mockRegisterTodoItem.mockClear();
+        vi.spyOn(console, 'log').mockImplementation(() => { });
+    });
 
     afterEach(() => {
         cleanup();
-    });
-
-    beforeEach(() => {
-        mockRegisterTodoItem.mockClear();
-        consoleLogSpy.mockClear();
+        vi.mocked(console.log).mockRestore();
     });
 
     it('renders 2 input fields with placeholders', () => {
