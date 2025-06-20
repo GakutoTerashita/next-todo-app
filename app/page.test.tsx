@@ -1,13 +1,13 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 import { render, cleanup } from "@testing-library/react";
-import { getTodoItems } from "@/lib/api/todo-items";
 import Home from "./page";
+import { fetchAllTodoItems } from "./actions/actions";
 
-vi.mock('@/lib/api/todo-items', () => ({
-    getTodoItems: vi.fn(),
+vi.mock('@/actions/actions', () => ({
+    fetchAllTodoItems: vi.fn(),
 }));
 
-const MockGetTodoItems = vi.mocked(getTodoItems);
+const MockFetchAllTodoItems = vi.mocked(fetchAllTodoItems);
 
 describe('Root Page', () => {
     afterEach(() => {
@@ -15,7 +15,7 @@ describe('Root Page', () => {
     });
 
     beforeEach(() => {
-        MockGetTodoItems.mockClear();
+        MockFetchAllTodoItems.mockClear();
     });
 
     it('fetches and displays todo items', async () => {
@@ -24,7 +24,7 @@ describe('Root Page', () => {
             { id: '2', title: 'Item 2', description: 'Description 2', deadline: new Date(), completed: true },
         ];
 
-        MockGetTodoItems.mockResolvedValueOnce(mockItems);
+        MockFetchAllTodoItems.mockResolvedValueOnce(mockItems);
 
         const result = render(<Home />);
 
@@ -38,7 +38,7 @@ describe('Root Page', () => {
             { id: '2', title: 'Item 2', description: 'Description 2', deadline: new Date(), completed: true },
         ];
 
-        MockGetTodoItems.mockResolvedValueOnce(mockItems);
+        MockFetchAllTodoItems.mockResolvedValueOnce(mockItems);
 
         const result = render(<Home />);
 
