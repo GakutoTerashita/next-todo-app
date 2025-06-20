@@ -1,6 +1,6 @@
 import { dbCreateTodoItem, dbFetchAllTodoItems } from '@/lib/db/todo-items';
 import { todo_item } from '@prisma/client';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { GET, POST } from './route';
 import { NextRequest } from 'next/server';
 
@@ -13,11 +13,9 @@ const mockDbFetchAllTodoItems = vi.mocked(dbFetchAllTodoItems);
 const mockDbCreateTodoItem = vi.mocked(dbCreateTodoItem);
 
 describe('GET /api/todo-items', () => {
-    const consoleErrorSpy = vi.spyOn(console, 'error');
     describe('success case', () => {
         beforeEach(() => {
             vi.clearAllMocks();
-            consoleErrorSpy.mockClear();
         });
 
         it('respond with all todo items got', async () => {
@@ -50,11 +48,9 @@ describe('GET /api/todo-items', () => {
     describe('failure case', () => {
         beforeEach(() => {
             vi.clearAllMocks();
-            consoleErrorSpy.mockClear();
         });
 
         it('respond with 500 on error', async () => {
-            consoleErrorSpy.mockImplementation(() => { });
             mockDbFetchAllTodoItems.mockRejectedValue(new Error("Database error"));
             const response = await GET();
             const body = await response.json();
@@ -67,11 +63,9 @@ describe('GET /api/todo-items', () => {
 });
 
 describe('POST /api/todo-items', () => {
-    const consoleErrorSpy = vi.spyOn(console, 'error');
     describe('success case', () => {
         beforeEach(() => {
             vi.clearAllMocks();
-            consoleErrorSpy.mockClear();
         });
 
         it('creates a new todo item and responds with it', async () => {
@@ -106,11 +100,9 @@ describe('POST /api/todo-items', () => {
     describe('failure case', () => {
         beforeEach(() => {
             vi.clearAllMocks();
-            consoleErrorSpy.mockClear();
         });
 
         it('responds with 500 on error', async () => {
-            consoleErrorSpy.mockImplementation(() => { });
             mockDbCreateTodoItem.mockRejectedValue(new Error("Database error"));
 
             const request = new NextRequest('http://localhost/api/todo-items', {
