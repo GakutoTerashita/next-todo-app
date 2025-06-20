@@ -48,6 +48,11 @@ describe('GET /api/todo-items', () => {
     describe('failure case', () => {
         beforeEach(() => {
             vi.clearAllMocks();
+            vi.spyOn(console, 'error').mockImplementation(() => { });
+        });
+
+        afterEach(() => {
+            vi.mocked(console.error).mockRestore();
         });
 
         it('respond with 500 on error', async () => {
@@ -100,6 +105,11 @@ describe('POST /api/todo-items', () => {
     describe('failure case', () => {
         beforeEach(() => {
             vi.clearAllMocks();
+            vi.spyOn(console, 'error').mockImplementation(() => { });
+        });
+
+        afterEach(() => {
+            vi.mocked(console.error).mockRestore();
         });
 
         it('responds with 500 on error', async () => {
