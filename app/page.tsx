@@ -1,3 +1,5 @@
+"use client";
+
 import ItemRegistrationForm from "@/components/ItemRegistrationForm";
 import TodoList from "@/components/TodoList";
 import { getTodoItems } from "@/lib/api/todo-items";
