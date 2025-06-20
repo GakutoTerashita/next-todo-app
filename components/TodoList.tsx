@@ -1,5 +1,3 @@
-'use client';
-
 import { Divider, List } from "@mui/material";
 import { todo_item } from "@prisma/client";
 import React from "react";
@@ -13,6 +11,7 @@ const TodoList = (props: Props) => {
     return (
         <List>
             {props.items.map((item, index) => {
+                console.log(item.deadline instanceof Date);
                 return (
                     <React.Fragment key={item.id}>
                         <TodoListItem item={item} />

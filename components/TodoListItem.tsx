@@ -1,4 +1,6 @@
-import { ListItem, Stack, Button, Divider } from "@mui/material";
+"use client";
+
+import { ListItem, Stack } from "@mui/material";
 import { todo_item } from "@prisma/client";
 import React from "react";
 import ItemCtrlButtons from "./ItemCtrlButtons";
@@ -18,7 +20,7 @@ const TodoListItem = (props: Props) => (
                 <p>{
                     props.item.deadline
                         ?
-                        `Deadline: ${props.item.deadline.toISOString()}`
+                        `Deadline: ${props.item.deadline.toLocaleDateString()}`
                         :
                         ""
                 }</p>
