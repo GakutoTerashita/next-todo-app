@@ -21,6 +21,10 @@ export const registerTodoItem = async (
     });
 }
 
+type ResponeTodoItem = Omit<todo_item, 'deadline'> & {
+    deadline: string | null;
+};
+type GetTodoItemsResponse = ResponeTodoItem[];
 export const getTodoItems = async (): Promise<todo_item[]> => {
     const response = await fetch('/api/todo-items', {
         method: 'GET',
@@ -33,8 +37,24 @@ export const getTodoItems = async (): Promise<todo_item[]> => {
         throw new Error('Failed to fetch todo items');
     }
 
-    return await response.json().catch((error) => {
+    const responseParsed: GetTodoItemsResponse = await response.json().catch((error) => {
         console.error("Failed to parse response:", error);
         throw new Error('Failed to parse response from server');
     });
+
+    const todo_item = responseParsed.map((item) => {
+        if (item.deadline) {
+            return {
+                ...item,
+                deadline: new Date(item.deadline),
+            };
+        } else {
+            return {
+                ...item,
+                deadline: null,
+            };
+        }
+    });
+
+    return todo_item;
 }
