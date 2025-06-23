@@ -21,7 +21,7 @@ export const POST = async (request: NextRequest): Promise<NextResponse> => {
     const schema = z.object({
         title: z.string().min(1, "Title is required"),
         description: z.string().optional().nullable(),
-        deadline: z.date().optional().nullable(),
+        deadline: z.iso.datetime().optional().nullable(),
     });
 
     try {
@@ -30,7 +30,7 @@ export const POST = async (request: NextRequest): Promise<NextResponse> => {
         const todoItem = await dbCreateTodoItem({
             title: parsedBody.title,
             description: parsedBody.description || '',
-            deadline: parsedBody.deadline || null,
+            deadline: parsedBody.deadline ? new Date(parsedBody.deadline) : null,
         });
         return NextResponse.json(todoItem);
     } catch (error) {

@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "test": "vitest --run",
-    "test:ui": "vitest --ui",
+    "test:ui": "vitest --ui --api 3070",
     "db:migrate": "dotenv -e .env.local -- prisma migrate dev"
   },
   "dependencies": {
