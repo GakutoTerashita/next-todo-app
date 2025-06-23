@@ -1,13 +1,14 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
-import { render, cleanup } from "@testing-library/react";
+import { render, cleanup, waitFor } from "@testing-library/react";
 import Home from "./page";
-import { fetchAllTodoItems } from "./actions/actions";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { getTodoItems } from "@/lib/api/todo-items";
 
-vi.mock('@/actions/actions', () => ({
-    fetchAllTodoItems: vi.fn(),
+vi.mock('@/lib/api/todo-items', () => ({
+    getTodoItems: vi.fn(),
 }));
 
-const MockFetchAllTodoItems = vi.mocked(fetchAllTodoItems);
+const MockGetTodoItems = vi.mocked(getTodoItems);
 
 describe('Root Page', () => {
     afterEach(() => {
@@ -15,7 +16,7 @@ describe('Root Page', () => {
     });
 
     beforeEach(() => {
-        MockFetchAllTodoItems.mockClear();
+        MockGetTodoItems.mockClear();
     });
 
     it('fetches and displays todo items', async () => {
@@ -24,27 +25,41 @@ describe('Root Page', () => {
             { id: '2', title: 'Item 2', description: 'Description 2', deadline: new Date(), completed: true },
         ];
 
-        MockFetchAllTodoItems.mockResolvedValueOnce(mockItems);
+        MockGetTodoItems.mockResolvedValueOnce(mockItems);
 
-        const result = render(<Home />);
+        const queryClient = new QueryClient();
+        const result = render(
+            <QueryClientProvider client={queryClient}>
+                <Home />
+            </QueryClientProvider>
+        );
 
-        expect(await result.findByText('Item 1'));
-        expect(await result.findByText('Item 2'));
+        await waitFor(async () => {
+            expect(await result.findByText('Item 1'));
+            expect(await result.findByText('Item 2'));
+        });
     });
 
-    it('renders the item registration form', () => {
+    it('renders the item registration form', async () => {
         const mockItems = [
             { id: '1', title: 'Item 1', description: 'Description 1', deadline: new Date(), completed: false },
             { id: '2', title: 'Item 2', description: 'Description 2', deadline: new Date(), completed: true },
         ];
 
-        MockFetchAllTodoItems.mockResolvedValueOnce(mockItems);
+        MockGetTodoItems.mockResolvedValueOnce(mockItems);
 
-        const result = render(<Home />);
+        const queryClient = new QueryClient();
+        const result = render(
+            <QueryClientProvider client={queryClient}>
+                <Home />
+            </QueryClientProvider>
+        );
 
-        expect(result.getByRole('textbox', { name: 'title' }));
-        expect(result.getByRole('textbox', { name: 'description' }));
-        expect(result.getByLabelText('deadline'));
-        expect(result.getByRole('button', { name: 'Add Item' }));
+        await waitFor(() => {
+            expect(result.getByRole('textbox', { name: 'title' }));
+            expect(result.getByRole('textbox', { name: 'description' }));
+            expect(result.getByLabelText('deadline'));
+            expect(result.getByRole('button', { name: 'Add Item' }));
+        });
     });
 });
