@@ -1,26 +1,41 @@
 import { Divider, List } from "@mui/material";
-import { todo_item } from "@prisma/client";
 import React from "react";
 import TodoListItem from "./TodoListItem";
+import { getTodoItems } from "@/lib/api/todo-items";
+import { useQuery } from "@tanstack/react-query";
 
-interface Props {
-    items: todo_item[];
-}
+const TodoList = () => {
+    const query = useQuery({ queryKey: ['todoItems'], queryFn: getTodoItems });
 
-const TodoList = (props: Props) => {
     return (
-        <List>
-            {props.items.map((item, index) => {
-                console.log(item.deadline instanceof Date);
-                return (
-                    <React.Fragment key={item.id}>
-                        <TodoListItem item={item} />
-                        {index < props.items.length - 1 && <Divider component="li" sx={{ marginY: 2 }} />}
-                    </React.Fragment>
-                );
-            })}
-        </List>
-    )
+        <React.Fragment>
+            {query.isLoading && (
+                <List>
+                    <h3>Loading items...</h3>
+                </List>
+            )}
+
+            {query.isError && (
+                <List>
+                    <h3>Error loading items</h3>
+                </List>
+            )}
+
+            {query.isSuccess && (
+                <List>
+                    {query.data.map((item, index) => {
+                        console.log(item.deadline instanceof Date);
+                        return (
+                            <React.Fragment key={item.id}>
+                                <TodoListItem item={item} />
+                                {index < query.data.length - 1 && <Divider component="li" sx={{ marginY: 2 }} />}
+                            </React.Fragment>
+                        );
+                    })}
+                </List>
+            )}
+        </React.Fragment>
+    );
 };
 
 export default TodoList;
