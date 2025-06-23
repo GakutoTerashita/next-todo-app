@@ -20,7 +20,7 @@ const TodoListItem = (props: Props) => (
                 <p>{
                     props.item.deadline
                         ?
-                        `Deadline: ${props.item.deadline.toLocaleDateString()}`
+                        `Deadline: ${props.item.deadline.toString()}`
                         :
                         ""
                 }</p>
