@@ -91,10 +91,10 @@ describe('TodoList', () => {
             </QueryClientProvider>
         );
 
-        // await waitFor(() => {
-        //     const loadText = result.getAllByText('Loading items...');
-        //     expect(loadText.length).toBe(0);
-        // })
+        await waitFor(() => {
+            expect(result.queryByText(/Loading/i)).toBeNull();
+            expect(result.queryByText(/Error/i)).toBeNull();
+        });
         const todoItems = result.queryAllByRole('listitem');
         expect(todoItems).toHaveLength(0); // No items should be rendered
     });
