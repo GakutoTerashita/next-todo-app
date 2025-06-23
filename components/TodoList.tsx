@@ -24,7 +24,6 @@ const TodoList = () => {
             {query.isSuccess && (
                 <List>
                     {query.data.map((item, index) => {
-                        console.log(item.deadline instanceof Date);
                         return (
                             <React.Fragment key={item.id}>
                                 <TodoListItem item={item} />
