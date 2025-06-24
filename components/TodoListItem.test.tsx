@@ -44,7 +44,7 @@ describe('TodoListItem', () => {
         }
         const result = render(<TodoListItem item={item} />);
 
-        expect(result.getByText("Deadline: 2023-10-03T00:00:00.000Z"));
+        expect(result.getByText("Deadline: 2023/10/03"));
     });
 
     it('does not render deadline if it does not exist', () => {

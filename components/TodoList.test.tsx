@@ -1,14 +1,22 @@
-import { cleanup, render } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { cleanup, render, waitFor } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import TodoList from "./TodoList";
 import { todo_item } from "@prisma/client";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { getTodoItems } from "@/app/actions";
+
+vi.mock('@/app/actions', () => ({
+    getTodoItems: vi.fn(),
+}));
+
+const MockGetTodoItems = vi.mocked(getTodoItems);
 
 describe('TodoList', () => {
     afterEach(() => {
         cleanup();
     });
 
-    it('should render a list of todo items', () => {
+    it('should render a list of todo items', async () => {
         const items: todo_item[] = [
             {
                 id: '1',
@@ -25,14 +33,22 @@ describe('TodoList', () => {
                 completed: false,
             }
         ]
-        const result = render(<TodoList items={items} />);
+        MockGetTodoItems.mockResolvedValueOnce(items);
 
-        const todoItems = result.getAllByRole('listitem');
+        const queryClient = new QueryClient();
+        const result = render(
+            <QueryClientProvider client={queryClient}>
+                <TodoList />
+            </QueryClientProvider>
+        );
 
-        expect(todoItems).toHaveLength(2);
+        await waitFor(() => {
+            const todoItems = result.getAllByRole('listitem');
+            expect(todoItems).toHaveLength(2);
+        });
     });
 
-    it('should render a divider between items', () => {
+    it('should render a divider between items', async () => {
         const items: todo_item[] = [
             {
                 id: '1',
@@ -49,15 +65,36 @@ describe('TodoList', () => {
                 completed: false,
             }
         ];
+        MockGetTodoItems.mockResolvedValueOnce(items);
 
-        const result = render(<TodoList items={items} />);
-        const dividers = result.getAllByRole('separator');
-        expect(dividers).toHaveLength(1); // One divider between two items
+        const queryClient = new QueryClient();
+        const result = render(
+            <QueryClientProvider client={queryClient}>
+                <TodoList />
+            </QueryClientProvider>
+        );
+
+        await waitFor(() => {
+            const dividers = result.getAllByRole('separator');
+            expect(dividers).toHaveLength(1); // One divider between two items
+        });
     });
 
-    it('should handle empty todo list gracefully', () => {
+    it('should handle empty todo list gracefully', async () => {
         const items: todo_item[] = [];
-        const result = render(<TodoList items={items} />);
+        MockGetTodoItems.mockResolvedValueOnce(items);
+
+        const queryClient = new QueryClient();
+        const result = render(
+            <QueryClientProvider client={queryClient}>
+                <TodoList />
+            </QueryClientProvider>
+        );
+
+        await waitFor(() => {
+            expect(result.queryByText(/Loading/i)).toBeNull();
+            expect(result.queryByText(/Error/i)).toBeNull();
+        });
         const todoItems = result.queryAllByRole('listitem');
         expect(todoItems).toHaveLength(0); // No items should be rendered
     });

@@ -5,6 +5,8 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import type { Metadata } from "next";
 import React from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import Providers from "./providers";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -20,7 +22,9 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <CssBaseline />
-        {children}
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );

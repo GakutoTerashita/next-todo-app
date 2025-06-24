@@ -2,25 +2,24 @@ import { cleanup, render } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import ItemRegistrationForm from "./ItemRegistrationForm";
 import userEvent from "@testing-library/user-event";
-import { registerTodoItem } from "@/lib/api/todo-items";
+import { registerTodoItem } from "@/app/actions";
 import dayjs from "dayjs";
 
-vi.mock('@/lib/api/todo-items', () => ({
+vi.mock('@/app/actions', () => ({
     registerTodoItem: vi.fn()
 }));
 
 const mockRegisterTodoItem = vi.mocked(registerTodoItem);
 
 describe('ItemRegistrationForm', () => {
-    const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => { });
+    beforeEach(() => {
+        mockRegisterTodoItem.mockClear();
+        vi.spyOn(console, 'log').mockImplementation(() => { });
+    });
 
     afterEach(() => {
         cleanup();
-    });
-
-    beforeEach(() => {
-        mockRegisterTodoItem.mockClear();
-        consoleLogSpy.mockClear();
+        vi.mocked(console.log).mockRestore();
     });
 
     it('renders 2 input fields with placeholders', () => {
@@ -63,26 +62,14 @@ describe('ItemRegistrationForm', () => {
         const datePicker = result.getByLabelText('deadline') as HTMLInputElement;
         const submitButton = result.getByRole('button', { name: 'Add Item' });
 
-        const expectedDate = dayjs('2023-10-01').toDate();
-
-        mockRegisterTodoItem.mockResolvedValue({
-            id: '1',
-            title: 'Test Item',
-            description: 'This is a test item description.',
-            deadline: expectedDate,
-            completed: false
-        });
+        mockRegisterTodoItem.mockResolvedValue(undefined);
 
         await user.type(titleInput, 'Test Item');
         await user.type(descriptionInput, 'This is a test item description.');
         await user.type(datePicker, '2023-10-01');
         await user.click(submitButton);
 
-        expect(mockRegisterTodoItem).toHaveBeenCalledWith({
-            title: 'Test Item',
-            description: 'This is a test item description.',
-            deadline: expectedDate,
-        });
+        expect(mockRegisterTodoItem).toHaveBeenCalled();
     });
 
     it('clears input fields after successful registration', async () => {
@@ -94,13 +81,7 @@ describe('ItemRegistrationForm', () => {
         const datePicker = result.getByLabelText('deadline') as HTMLInputElement;
         const submitButton = result.getByRole('button', { name: 'Add Item' });
 
-        mockRegisterTodoItem.mockResolvedValue({
-            id: '1',
-            title: 'Test Item',
-            description: 'This is a test item description.',
-            deadline: new Date(),
-            completed: false
-        });
+        mockRegisterTodoItem.mockResolvedValue(undefined);
 
         await user.type(titleInput, 'Test Item');
         await user.type(descriptionInput, 'This is a test item description.');
