@@ -2,12 +2,14 @@ import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 import { render, cleanup, waitFor } from "@testing-library/react";
 import Home from "./page";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { getTodoItems } from "./actions";
+import { getTodoItems, registerTodoItem } from "./actions";
 
 vi.mock('@/app/actions', () => ({
+    registerTodoItem: vi.fn(),
     getTodoItems: vi.fn(),
 }));
 
+const MockRegisterTodoItem = vi.mocked(registerTodoItem); // Internally used by ItemRegistrationForm
 const MockGetTodoItems = vi.mocked(getTodoItems);
 
 describe('Root Page', () => {
