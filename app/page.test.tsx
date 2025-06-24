@@ -2,9 +2,9 @@ import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 import { render, cleanup, waitFor } from "@testing-library/react";
 import Home from "./page";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { getTodoItems } from "@/lib/api/todo-items";
+import { getTodoItems } from "./actions";
 
-vi.mock('@/lib/api/todo-items', () => ({
+vi.mock('@/app/actions', () => ({
     getTodoItems: vi.fn(),
 }));
 

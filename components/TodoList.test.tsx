@@ -2,10 +2,10 @@ import { cleanup, render, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import TodoList from "./TodoList";
 import { todo_item } from "@prisma/client";
-import { getTodoItems } from "@/lib/api/todo-items";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { getTodoItems } from "@/app/actions";
 
-vi.mock('@/lib/api/todo-items', () => ({
+vi.mock('@/app/actions', () => ({
     getTodoItems: vi.fn(),
 }));
 

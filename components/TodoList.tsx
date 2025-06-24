@@ -1,8 +1,8 @@
 import { Divider, List } from "@mui/material";
 import React from "react";
 import TodoListItem from "./TodoListItem";
-import { getTodoItems } from "@/lib/api/todo-items";
 import { useQuery } from "@tanstack/react-query";
+import { getTodoItems } from "@/app/actions";
 
 const TodoList = () => {
     const query = useQuery({ queryKey: ['todoItems'], queryFn: getTodoItems });
