@@ -62,8 +62,6 @@ describe('ItemRegistrationForm', () => {
         const datePicker = result.getByLabelText('deadline') as HTMLInputElement;
         const submitButton = result.getByRole('button', { name: 'Add Item' });
 
-        const expectedDate = dayjs('2023-10-01').toDate();
-
         mockRegisterTodoItem.mockResolvedValue(undefined);
 
         await user.type(titleInput, 'Test Item');
