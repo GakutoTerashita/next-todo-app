@@ -11,6 +11,12 @@ vi.mock('@/app/actions', () => ({
 }));
 
 vi.mock('@tanstack/react-query', async (importOriginal) => {
+    // https://vitest.dev/api/vi.html#vi-mock
+    // Doc says type will be inferred from the original import...
+    // 
+    // const original = await importOriginal();
+    //
+    // I tried above, but it does not work.
     const original = await importOriginal<typeof import('@tanstack/react-query')>();
     return {
         ...original,
