@@ -16,3 +16,10 @@ export const dbCreateTodoItem = async (data: Omit<todo_item, 'id' | 'completed'>
     });
     return newTodoItem;
 }
+
+export const dbDeleteTodoItem = async (id: string): Promise<todo_item> => {
+    const deletedTodoItem = await prisma.todo_item.delete({
+        where: { id },
+    });
+    return deletedTodoItem;
+};

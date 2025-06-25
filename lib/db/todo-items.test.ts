@@ -1,18 +1,20 @@
 import { describe, expect, vi, beforeEach, it } from "vitest";
 import { prisma } from "@/lib/prisma";
-import { dbCreateTodoItem, dbFetchAllTodoItems } from "./todo-items";
+import { dbCreateTodoItem, dbDeleteTodoItem, dbFetchAllTodoItems } from "./todo-items";
 
 vi.mock('@/lib/prisma', () => ({
     prisma: {
         todo_item: {
             findMany: vi.fn(),
             create: vi.fn(),
+            delete: vi.fn(),
         },
     }
 }));
 
 const mockFindMany = vi.mocked(prisma.todo_item.findMany);
 const mockCreate = vi.mocked(prisma.todo_item.create);
+const mockDelete = vi.mocked(prisma.todo_item.delete);
 
 describe('dbFetchAllTodoItems', () => {
     describe('success case', () => {
@@ -115,3 +117,47 @@ describe('dbCreateTodoItem', () => {
         });
     });
 });
+
+describe('deDeleteTodoItem', () => {
+    describe('success case', () => {
+        beforeEach(() => {
+            vi.clearAllMocks();
+        });
+
+        it('deletes a todo item from the database', async () => {
+            const mockTodoItem = {
+                id: '1',
+                title: 'Test Todo',
+                description: 'Description',
+                deadline: null,
+                completed: false,
+            };
+
+            mockDelete.mockResolvedValue(mockTodoItem);
+
+            const deletedItem = await dbDeleteTodoItem('1');
+
+            expect(deletedItem).toEqual(mockTodoItem);
+            expect(mockDelete).toHaveBeenCalledTimes(1);
+            expect(mockDelete).toHaveBeenCalledWith({
+                where: { id: '1' },
+            });
+        });
+    });
+
+    describe('failure case', () => {
+        beforeEach(() => {
+            vi.clearAllMocks();
+        });
+
+        it('throws an error when deleting a todo item fails', async () => {
+            mockDelete.mockRejectedValue(new Error("Database error"));
+
+            await expect(dbDeleteTodoItem('1')).rejects.toThrow("Database error");
+            expect(mockDelete).toHaveBeenCalledTimes(1);
+            expect(mockDelete).toHaveBeenCalledWith({
+                where: { id: '1' },
+            });
+        });
+    });
+})
