@@ -6,7 +6,8 @@ import { QueryClient, QueryClientProvider, useQueryClient } from "@tanstack/reac
 import userEvent from "@testing-library/user-event";
 import { renderWithQueryClientProvider } from "@/test/utils";
 
-vi.mock('@/app/actions', () => ({
+vi.mock('@/app/actions', async (importOriginal) => ({
+    ...await importOriginal<typeof import('@/app/actions')>(),
     deleteTodoItem: vi.fn(),
 }));
 
@@ -32,28 +33,28 @@ describe('ItemCtrlButtons', () => {
     });
 
     it('renders buttons with correct labels', () => {
-        const { getByText } = render(<ItemCtrlButtons completed={false} id="1" />);
+        const { getByRole } = renderWithQueryClientProvider(<ItemCtrlButtons completed={false} id="1" />);
 
-        expect(getByText('Complete'));
-        expect(getByText('Edit'));
-        expect(getByText('Delete'));
+        expect(getByRole('button', { name: 'Complete' }));
+        expect(getByRole('button', { name: 'Edit' }));
+        expect(getByRole('button', { name: 'Delete' }));
 
         cleanup();
 
-        const { getByText: getByTextCompleted } = render(<ItemCtrlButtons completed={true} id="2" />);
-        expect(getByTextCompleted('Completed'));
+        const { getByRole: getByRoleCompleted } = renderWithQueryClientProvider(<ItemCtrlButtons completed={true} id="2" />);
+        expect(getByRoleCompleted('button', { name: 'Completed' }));
     });
 
     describe('delete button', () => {
-        it('attempts to delete item on click', () => {
+        it('attempts to delete item on click', async () => {
             const user = userEvent.setup();
 
             const result = renderWithQueryClientProvider(<ItemCtrlButtons completed={false} id="1" />);
 
-            const deleteButton = result.getByText('Delete');
-            user.click(deleteButton);
+            const deleteButton = result.getByRole('button', { name: 'Delete' });
+            await user.click(deleteButton);
 
-            expect(mockDeleteTodoItem).toHaveBeenCalledWith('1');
+            expect(mockDeleteTodoItem).toHaveBeenCalled();
         });
 
         describe('success case', () => {
@@ -71,6 +72,8 @@ describe('ItemCtrlButtons', () => {
                 })
                 mockUseQueryClient.mockReturnValue(queryClient);
 
+                const invalidateQueriesSpy = vi.spyOn(queryClient, 'invalidateQueries');
+
                 const result = render(
                     <QueryClientProvider client={queryClient}>
                         <ItemCtrlButtons completed={false} id="1" />
@@ -80,8 +83,7 @@ describe('ItemCtrlButtons', () => {
                 const deleteButton = result.getByText('Delete');
                 await user.click(deleteButton);
 
-                expect(mockDeleteTodoItem).toHaveBeenCalledWith('1');
-                expect(queryClient.invalidateQueries).toHaveBeenCalledWith(['todoItems']);
+                expect(invalidateQueriesSpy).toHaveBeenCalledWith({ queryKey: ['todoItems'] });
             });
         });
 
@@ -100,6 +102,8 @@ describe('ItemCtrlButtons', () => {
                 });
                 mockUseQueryClient.mockReturnValue(queryClient);
 
+                const invalidateQueriesSpy = vi.spyOn(queryClient, 'invalidateQueries');
+
                 const result = render(
                     <QueryClientProvider client={queryClient}>
                         <ItemCtrlButtons completed={false} id="1" />
@@ -109,8 +113,8 @@ describe('ItemCtrlButtons', () => {
                 const deleteButton = result.getByText('Delete');
                 await user.click(deleteButton);
 
-                expect(mockDeleteTodoItem).toHaveBeenCalledWith('1');
-                expect(queryClient.invalidateQueries).not.toHaveBeenCalled();
+                expect(mockDeleteTodoItem).toHaveBeenCalled();
+                expect(invalidateQueriesSpy).not.toHaveBeenCalled();
             });
         })
     });

@@ -3,10 +3,12 @@ import { render, cleanup, waitFor } from "@testing-library/react";
 import Home from "./page";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { getTodoItems, registerTodoItem } from "./actions";
+import { renderWithQueryClientProvider } from "@/test/utils";
 
-vi.mock('@/app/actions', () => ({
-    registerTodoItem: vi.fn(),
+vi.mock('@/app/actions', async (importOriginal) => ({
+    ...await importOriginal<typeof import('@/app/actions')>(),
     getTodoItems: vi.fn(),
+    registerTodoItem: vi.fn(),
 }));
 
 const MockRegisterTodoItem = vi.mocked(registerTodoItem); // Internally used by ItemRegistrationForm
@@ -29,12 +31,7 @@ describe('Root Page', () => {
 
         MockGetTodoItems.mockResolvedValueOnce(mockItems);
 
-        const queryClient = new QueryClient();
-        const result = render(
-            <QueryClientProvider client={queryClient}>
-                <Home />
-            </QueryClientProvider>
-        );
+        const result = renderWithQueryClientProvider(<Home />);
 
         await waitFor(async () => {
             expect(await result.findByText('Item 1'));

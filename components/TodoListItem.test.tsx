@@ -2,6 +2,7 @@ import { todo_item } from "@prisma/client";
 import { cleanup, render } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import TodoListItem from "./TodoListItem";
+import { renderWithQueryClientProvider } from "@/test/utils";
 
 describe('TodoListItem', () => {
     afterEach(() => {
@@ -16,7 +17,7 @@ describe('TodoListItem', () => {
             deadline: new Date("2023-10-01T00:00:00Z"),
             completed: false
         }
-        const result = render(<TodoListItem item={item} />);
+        const result = renderWithQueryClientProvider(<TodoListItem item={item} />);
 
         expect(result.getByText("Test Item"));
     });
@@ -29,7 +30,7 @@ describe('TodoListItem', () => {
             deadline: new Date("2023-10-02T00:00:00Z"),
             completed: false
         }
-        const result = render(<TodoListItem item={item} />);
+        const result = renderWithQueryClientProvider(<TodoListItem item={item} />);
 
         expect(result.getByText("This is another test item."));
     });
@@ -42,7 +43,7 @@ describe('TodoListItem', () => {
             deadline: new Date("2023-10-03T00:00:00Z"),
             completed: false
         }
-        const result = render(<TodoListItem item={item} />);
+        const result = renderWithQueryClientProvider(<TodoListItem item={item} />);
 
         expect(result.getByText("Deadline: 2023/10/03"));
     });
@@ -55,7 +56,7 @@ describe('TodoListItem', () => {
             deadline: null,
             completed: false
         }
-        const result = render(<TodoListItem item={item} />);
+        const result = renderWithQueryClientProvider(<TodoListItem item={item} />);
 
         expect(result.queryByText("Deadline:")).toBeNull();
     });
@@ -68,7 +69,7 @@ describe('TodoListItem', () => {
             deadline: new Date("2023-10-04T00:00:00Z"),
             completed: false
         }
-        const result = render(<TodoListItem item={item} />);
+        const result = renderWithQueryClientProvider(<TodoListItem item={item} />);
 
         expect(result.getByRole('button', { name: /complete/i }));
         expect(result.getByRole('button', { name: /edit/i }));

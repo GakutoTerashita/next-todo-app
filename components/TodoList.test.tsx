@@ -5,7 +5,8 @@ import { todo_item } from "@prisma/client";
 import { getTodoItems } from "@/app/actions";
 import { renderWithQueryClientProvider } from "@/test/utils";
 
-vi.mock('@/app/actions', () => ({
+vi.mock('@/app/actions', async (importOriginal) => ({
+    ...await importOriginal<typeof import('@/app/actions')>(),
     getTodoItems: vi.fn(),
 }));
 
