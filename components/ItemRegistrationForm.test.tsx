@@ -1,9 +1,9 @@
-import { cleanup, render } from "@testing-library/react";
+import { cleanup } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import ItemRegistrationForm from "./ItemRegistrationForm";
 import userEvent from "@testing-library/user-event";
 import { registerTodoItem } from "@/app/actions";
-import dayjs from "dayjs";
+import { renderWithQueryClientProvider } from "@/test/utils";
 
 vi.mock('@/app/actions', () => ({
     registerTodoItem: vi.fn()
@@ -23,14 +23,14 @@ describe('ItemRegistrationForm', () => {
     });
 
     it('renders 2 input fields with placeholders', () => {
-        const result = render(<ItemRegistrationForm />);
+        const result = renderWithQueryClientProvider(<ItemRegistrationForm />);
 
         expect(result.getByRole('textbox', { name: 'title' }));
         expect(result.getByRole('textbox', { name: 'description' }));
     });
 
     it('renders a date picker', () => {
-        const result = render(<ItemRegistrationForm />);
+        const result = renderWithQueryClientProvider(<ItemRegistrationForm />);
 
         const datePicker = result.getByLabelText('deadline');
         expect(datePicker.getAttribute('type')).toBe('date');
@@ -38,7 +38,7 @@ describe('ItemRegistrationForm', () => {
 
     it('user input is reflected in the input fields', async () => {
         const user = userEvent.setup();
-        const result = render(<ItemRegistrationForm />);
+        const result = renderWithQueryClientProvider(<ItemRegistrationForm />);
 
         const titleInput = result.getByRole('textbox', { name: 'title' }) as HTMLInputElement;
         const descriptionInput = result.getByRole('textbox', { name: 'description' }) as HTMLInputElement;
@@ -55,7 +55,7 @@ describe('ItemRegistrationForm', () => {
 
     it('performs registeration on form submission', async () => {
         const user = userEvent.setup();
-        const result = render(<ItemRegistrationForm />);
+        const result = renderWithQueryClientProvider(<ItemRegistrationForm />);
 
         const titleInput = result.getByRole('textbox', { name: 'title' }) as HTMLInputElement;
         const descriptionInput = result.getByRole('textbox', { name: 'description' }) as HTMLInputElement;
@@ -74,7 +74,7 @@ describe('ItemRegistrationForm', () => {
 
     it('clears input fields after successful registration', async () => {
         const user = userEvent.setup();
-        const result = render(<ItemRegistrationForm />);
+        const result = renderWithQueryClientProvider(<ItemRegistrationForm />);
 
         const titleInput = result.getByRole('textbox', { name: 'title' }) as HTMLInputElement;
         const descriptionInput = result.getByRole('textbox', { name: 'description' }) as HTMLInputElement;

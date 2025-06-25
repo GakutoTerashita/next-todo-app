@@ -1,9 +1,9 @@
-import { cleanup, render, waitFor } from "@testing-library/react";
+import { cleanup, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import TodoList from "./TodoList";
 import { todo_item } from "@prisma/client";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { getTodoItems } from "@/app/actions";
+import { renderWithQueryClientProvider } from "@/test/utils";
 
 vi.mock('@/app/actions', () => ({
     getTodoItems: vi.fn(),
@@ -35,12 +35,7 @@ describe('TodoList', () => {
         ]
         MockGetTodoItems.mockResolvedValueOnce(items);
 
-        const queryClient = new QueryClient();
-        const result = render(
-            <QueryClientProvider client={queryClient}>
-                <TodoList />
-            </QueryClientProvider>
-        );
+        const result = renderWithQueryClientProvider(<TodoList />);
 
         await waitFor(() => {
             const todoItems = result.getAllByRole('listitem');
@@ -67,12 +62,7 @@ describe('TodoList', () => {
         ];
         MockGetTodoItems.mockResolvedValueOnce(items);
 
-        const queryClient = new QueryClient();
-        const result = render(
-            <QueryClientProvider client={queryClient}>
-                <TodoList />
-            </QueryClientProvider>
-        );
+        const result = renderWithQueryClientProvider(<TodoList />);
 
         await waitFor(() => {
             const dividers = result.getAllByRole('separator');
@@ -84,12 +74,7 @@ describe('TodoList', () => {
         const items: todo_item[] = [];
         MockGetTodoItems.mockResolvedValueOnce(items);
 
-        const queryClient = new QueryClient();
-        const result = render(
-            <QueryClientProvider client={queryClient}>
-                <TodoList />
-            </QueryClientProvider>
-        );
+        const result = renderWithQueryClientProvider(<TodoList />);
 
         await waitFor(() => {
             expect(result.queryByText(/Loading/i)).toBeNull();
