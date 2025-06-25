@@ -11,13 +11,10 @@ vi.mock('@/app/actions', async (importOriginal) => ({
     deleteTodoItem: vi.fn(),
 }));
 
-vi.mock('@tanstack/react-query', async (importOriginal) => {
-    const original = await importOriginal<typeof import('@tanstack/react-query')>();
-    return {
-        ...original,
-        useQueryClient: vi.fn(),
-    };
-});
+vi.mock('@tanstack/react-query', async (importOriginal) => ({
+    ...await importOriginal<typeof import('@tanstack/react-query')>(),
+    useQueryClient: vi.fn(),
+}));
 
 const mockDeleteTodoItem = vi.mocked(deleteTodoItem);
 const mockUseQueryClient = vi.mocked(useQueryClient);
