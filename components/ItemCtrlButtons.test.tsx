@@ -1,4 +1,3 @@
-import { fireEvent } from "@testing-library/dom";
 import { cleanup, render } from "@testing-library/react";
 import { afterEach, beforeEach, describe, it, vi, expect } from "vitest";
 import ItemCtrlButtons from "./ItemCtrlButtons";
