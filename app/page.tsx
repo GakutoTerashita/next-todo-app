@@ -7,7 +7,7 @@ import React from "react";
 const Home = () => {
   return (
     <Container maxWidth="lg">
-      <Paper elevation={3} sx={{ padding: 1, marginTop: 2, marginBottom: 2 }}>
+      <Paper elevation={3} sx={{ padding: 1, marginTop: 2, marginBottom: 2, maxHeight: '80vh', overflowY: 'auto' }}>
         <TodoList />
       </Paper>
       <Paper elevation={3} sx={{ padding: 2 }}>
