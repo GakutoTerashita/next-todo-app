@@ -29,11 +29,11 @@ export const registerTodoItem = async (formData: FormData) => {
     return;
 };
 
-export const deleteTodoItem = async (FormData: FormData) => {
+export const deleteTodoItem = async (formData: FormData) => {
     const schema = z.object({
         id: z.string().min(1, "ID is required"),
     });
-    const parsedData = schema.safeParse(Object.fromEntries(FormData));
+    const parsedData = schema.safeParse(Object.fromEntries(formData));
 
     if (!parsedData.success) {
         throw new Error("Invalid form data");
