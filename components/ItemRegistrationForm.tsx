@@ -2,12 +2,21 @@
 
 import { registerTodoItem } from "@/app/actions";
 import { Button, TextField } from "@mui/material";
-import React, { useActionState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import React from "react";
 
 const ItemRegistrationForm = () => {
+    const queryClient = useQueryClient();
+    const mutation = useMutation({
+        mutationFn: registerTodoItem,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['todoItems'] });
+        }
+    })
+
     return (
         <React.Fragment>
-            <form action={registerTodoItem}>
+            <form action={mutation.mutate}>
                 <TextField
                     type="text"
                     name="title"
