@@ -1,4 +1,5 @@
 import { completeTodoItem, deleteTodoItem, uncompleteTodoItem } from "@/app/actions";
+import useTodoMutation from "@/hooks/useTodoMutation";
 import { Button } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import React from "react";
@@ -9,25 +10,9 @@ interface Props {
 }
 
 const ItemCtrlButtons = (props: Props) => {
-    const queryClient = useQueryClient();
-    const mutDelete = useMutation({
-        mutationFn: deleteTodoItem,
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["todoItems"] });
-        },
-    });
-    const mutComplete = useMutation({
-        mutationFn: completeTodoItem,
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["todoItems"] });
-        },
-    });
-    const mutUncomplete = useMutation({
-        mutationFn: uncompleteTodoItem,
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["todoItems"] });
-        },
-    });
+    const mutDelete = useTodoMutation(deleteTodoItem);
+    const mutComplete = useTodoMutation(completeTodoItem);
+    const mutUncomplete = useTodoMutation(uncompleteTodoItem);
 
     return (
         <React.Fragment>
