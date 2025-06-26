@@ -194,4 +194,21 @@ describe('dbCompleteTodoItem', () => {
             });
         });
     });
+
+    describe('failure case', () => {
+        beforeEach(() => {
+            vi.clearAllMocks();
+        });
+
+        it('throws an error when completing a todo item fails', async () => {
+            mockUpdate.mockRejectedValue(new Error("Database error"));
+
+            await expect(dbCompleteTodoItem('1')).rejects.toThrow("Database error");
+            expect(mockUpdate).toHaveBeenCalledTimes(1);
+            expect(mockUpdate).toHaveBeenCalledWith({
+                where: { id: '1' },
+                data: { completed: true },
+            });
+        });
+    });
 });
