@@ -20,8 +20,9 @@ vi.mock('@tanstack/react-query', async (importOriginal) => ({
 
 const mockDeleteTodoItem = vi.mocked(deleteTodoItem);
 const mockCompleteTodoItem = vi.mocked(completeTodoItem);
-const mockUseQueryClient = vi.mocked(useQueryClient);
 const mockUncompleteTodoItem = vi.mocked(uncompleteTodoItem);
+
+const mockUseQueryClient = vi.mocked(useQueryClient);
 
 describe('ItemCtrlButtons', () => {
     afterEach(() => {
