@@ -1,6 +1,6 @@
 import { describe, expect, vi, beforeEach, it } from "vitest";
 import { prisma } from "@/lib/prisma";
-import { dbCreateTodoItem, dbDeleteTodoItem, dbFetchAllTodoItems } from "./todo-items";
+import { dbCreateTodoItem, dbDeleteTodoItem, dbFetchAllTodoItems, dbCompleteTodoItem } from "./todo-items";
 
 vi.mock('@/lib/prisma', () => ({
     prisma: {
@@ -8,6 +8,7 @@ vi.mock('@/lib/prisma', () => ({
             findMany: vi.fn(),
             create: vi.fn(),
             delete: vi.fn(),
+            update: vi.fn(),
         },
     }
 }));
@@ -15,6 +16,7 @@ vi.mock('@/lib/prisma', () => ({
 const mockFindMany = vi.mocked(prisma.todo_item.findMany);
 const mockCreate = vi.mocked(prisma.todo_item.create);
 const mockDelete = vi.mocked(prisma.todo_item.delete);
+const mockUpdate = vi.mocked(prisma.todo_item.update);
 
 describe('dbFetchAllTodoItems', () => {
     describe('success case', () => {
@@ -118,7 +120,7 @@ describe('dbCreateTodoItem', () => {
     });
 });
 
-describe('deDeleteTodoItem', () => {
+describe('dbDeleteTodoItem', () => {
     describe('success case', () => {
         beforeEach(() => {
             vi.clearAllMocks();
@@ -160,4 +162,36 @@ describe('deDeleteTodoItem', () => {
             });
         });
     });
-})
+});
+
+describe('dbCompleteTodoItem', () => {
+    describe('success case', () => {
+        beforeEach(() => {
+            vi.clearAllMocks();
+        });
+
+        it('sets the completion status of a todo item true', async () => {
+            const mockTodoItem = {
+                id: '1',
+                title: 'Test Todo',
+                description: 'Description',
+                deadline: null,
+                completed: false,
+            };
+
+            mockUpdate.mockResolvedValue({
+                ...mockTodoItem,
+                completed: true,
+            });
+
+            const updatedItem = await dbCompleteTodoItem('1');
+
+            expect(updatedItem.completed).toBe(true);
+            expect(mockUpdate).toHaveBeenCalledTimes(1);
+            expect(mockUpdate).toHaveBeenCalledWith({
+                where: { id: '1' },
+                data: { completed: true },
+            });
+        });
+    });
+});

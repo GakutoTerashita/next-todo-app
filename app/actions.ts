@@ -1,6 +1,6 @@
 "use server";
 
-import { dbCreateTodoItem, dbDeleteTodoItem, dbFetchAllTodoItems } from "@/lib/db/todo-items";
+import { dbCompleteTodoItem, dbCreateTodoItem, dbDeleteTodoItem, dbFetchAllTodoItems } from "@/lib/db/todo-items";
 import * as z from "zod/v4";
 
 export const getTodoItems = async () => {
@@ -41,5 +41,20 @@ export const deleteTodoItem = async (formData: FormData) => {
 
     const { id } = parsedData.data;
     await dbDeleteTodoItem(id);
+    return;
+};
+
+export const completeTodoItem = async (formData: FormData) => {
+    const schema = z.object({
+        id: z.string().min(1, "ID is required"),
+    });
+    const parsedData = schema.safeParse(Object.fromEntries(formData));
+
+    if (!parsedData.success) {
+        throw new Error("Invalid form data");
+    }
+
+    const { id } = parsedData.data;
+    await dbCompleteTodoItem(id);
     return;
 };
