@@ -1,4 +1,4 @@
-import { deleteTodoItem } from "@/app/actions";
+import { completeTodoItem, deleteTodoItem } from "@/app/actions";
 import { Button } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import React from "react";
@@ -16,19 +16,26 @@ const ItemCtrlButtons = (props: Props) => {
             queryClient.invalidateQueries({ queryKey: ["todoItems"] });
         },
     });
+    const mutComplete = useMutation({
+        mutationFn: completeTodoItem,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["todoItems"] });
+        },
+    });
 
     return (
         <React.Fragment>
-            <Button
-                variant="contained"
-                color={props.completed ? "success" : "primary"}
-                onClick={() => {
-                    console.log(`Toggle completion for props.item ${props.id}`);
-                }}
-                sx={{ marginRight: 1 }}
-            >
-                {props.completed ? "Completed" : "Complete"}
-            </Button>
+            <form action={mutComplete.mutate}>
+                <input type="hidden" name="id" value={props.id} />
+                <Button
+                    variant="contained"
+                    color={props.completed ? "success" : "primary"}
+                    type="submit"
+                    sx={{ marginRight: 1 }}
+                >
+                    {props.completed ? "Completed" : "Complete"}
+                </Button>
+            </form>
             <Button
                 variant="outlined"
                 color="secondary"
@@ -40,6 +47,7 @@ const ItemCtrlButtons = (props: Props) => {
                 Edit
             </Button>
             <form action={mutDelete.mutate}>
+                <input type="hidden" name="id" value={props.id} />
                 <Button
                     variant="outlined"
                     color="error"
@@ -47,7 +55,6 @@ const ItemCtrlButtons = (props: Props) => {
                 >
                     Delete
                 </Button>
-                <input type="hidden" name="id" value={props.id} />
             </form>
         </React.Fragment>
     );
