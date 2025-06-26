@@ -1,7 +1,7 @@
 import { cleanup, render } from "@testing-library/react";
 import { afterEach, beforeEach, describe, it, vi, expect } from "vitest";
 import ItemCtrlButtons from "./ItemCtrlButtons";
-import { completeTodoItem, deleteTodoItem } from "@/app/actions";
+import { completeTodoItem, deleteTodoItem, uncompleteTodoItem } from "@/app/actions";
 import { QueryClient, QueryClientProvider, useQueryClient } from "@tanstack/react-query";
 import userEvent from "@testing-library/user-event";
 import { renderWithQueryClientProvider } from "@/test/utils";
@@ -10,6 +10,7 @@ vi.mock('@/app/actions', async (importOriginal) => ({
     ...await importOriginal<typeof import('@/app/actions')>(),
     deleteTodoItem: vi.fn(),
     completeTodoItem: vi.fn(),
+    uncompleteTodoItem: vi.fn(),
 }));
 
 vi.mock('@tanstack/react-query', async (importOriginal) => ({
@@ -20,6 +21,7 @@ vi.mock('@tanstack/react-query', async (importOriginal) => ({
 const mockDeleteTodoItem = vi.mocked(deleteTodoItem);
 const mockCompleteTodoItem = vi.mocked(completeTodoItem);
 const mockUseQueryClient = vi.mocked(useQueryClient);
+const mockUncompleteTodoItem = vi.mocked(uncompleteTodoItem);
 
 describe('ItemCtrlButtons', () => {
     afterEach(() => {
@@ -119,77 +121,155 @@ describe('ItemCtrlButtons', () => {
     });
 
     describe('complete button', () => {
-        describe('success case', () => {
-            it('calls completeTodoItem on click', async () => {
-                mockCompleteTodoItem.mockResolvedValue(undefined);
+        describe('complete', () => {
+            describe('success case', () => {
+                it('calls completeTodoItem on click', async () => {
+                    mockCompleteTodoItem.mockResolvedValue(undefined);
 
-                const user = userEvent.setup();
+                    const user = userEvent.setup();
 
-                const result = renderWithQueryClientProvider(<ItemCtrlButtons completed={false} id="1" />);
+                    const result = renderWithQueryClientProvider(<ItemCtrlButtons completed={false} id="1" />);
 
-                const completeButton = result.getByRole('button', { name: 'Complete' });
-                await user.click(completeButton);
+                    const completeButton = result.getByRole('button', { name: 'Complete' });
+                    await user.click(completeButton);
 
-                expect(mockCompleteTodoItem).toHaveBeenCalled();
+                    expect(mockCompleteTodoItem).toHaveBeenCalled();
+                });
+
+                it('invalidates the query after completion', async () => {
+                    mockCompleteTodoItem.mockResolvedValue(undefined);
+
+                    const user = userEvent.setup();
+
+                    const queryClient = new QueryClient({
+                        defaultOptions: {
+                            queries: {
+                                retry: false,
+                            },
+                        },
+                    });
+                    mockUseQueryClient.mockReturnValue(queryClient);
+
+                    const invalidateQueriesSpy = vi.spyOn(queryClient, 'invalidateQueries');
+
+                    const result = render(
+                        <QueryClientProvider client={queryClient}>
+                            <ItemCtrlButtons completed={false} id="1" />
+                        </QueryClientProvider>
+                    );
+
+                    const completeButton = result.getByRole('button', { name: 'Complete' });
+                    await user.click(completeButton);
+
+                    expect(invalidateQueriesSpy).toHaveBeenCalledWith({ queryKey: ['todoItems'] });
+                });
             });
 
-            it('invalidates the query after completion', async () => {
-                mockCompleteTodoItem.mockResolvedValue(undefined);
+            describe('failure case', () => {
+                it('does not invalidate the query if completion fails', async () => {
+                    mockCompleteTodoItem.mockRejectedValue(new Error('Completion failed'));
 
-                const user = userEvent.setup();
+                    const user = userEvent.setup();
 
-                const queryClient = new QueryClient({
-                    defaultOptions: {
-                        queries: {
-                            retry: false,
+                    const queryClient = new QueryClient({
+                        defaultOptions: {
+                            queries: {
+                                retry: false,
+                            },
                         },
-                    },
+                    });
+                    mockUseQueryClient.mockReturnValue(queryClient);
+
+                    const invalidateQueriesSpy = vi.spyOn(queryClient, 'invalidateQueries');
+
+                    const result = render(
+                        <QueryClientProvider client={queryClient}>
+                            <ItemCtrlButtons completed={false} id="1" />
+                        </QueryClientProvider>
+                    );
+
+                    const completeButton = result.getByRole('button', { name: 'Complete' });
+                    await user.click(completeButton);
+
+                    expect(mockCompleteTodoItem).toHaveBeenCalled();
+                    expect(invalidateQueriesSpy).not.toHaveBeenCalled();
                 });
-                mockUseQueryClient.mockReturnValue(queryClient);
-
-                const invalidateQueriesSpy = vi.spyOn(queryClient, 'invalidateQueries');
-
-                const result = render(
-                    <QueryClientProvider client={queryClient}>
-                        <ItemCtrlButtons completed={false} id="1" />
-                    </QueryClientProvider>
-                );
-
-                const completeButton = result.getByRole('button', { name: 'Complete' });
-                await user.click(completeButton);
-
-                expect(invalidateQueriesSpy).toHaveBeenCalledWith({ queryKey: ['todoItems'] });
             });
         });
 
-        describe('failure case', () => {
-            it('does not invalidate the query if completion fails', async () => {
-                mockCompleteTodoItem.mockRejectedValue(new Error('Completion failed'));
+        describe('uncomplete', () => {
+            describe('success case', () => {
+                it('calls uncompleteTodoItem on click', async () => {
+                    mockUncompleteTodoItem.mockResolvedValue(undefined);
 
-                const user = userEvent.setup();
+                    const user = userEvent.setup();
 
-                const queryClient = new QueryClient({
-                    defaultOptions: {
-                        queries: {
-                            retry: false,
-                        },
-                    },
+                    const result = renderWithQueryClientProvider(<ItemCtrlButtons completed={true} id="1" />);
+
+                    const completeButton = result.getByRole('button', { name: 'Completed' });
+                    await user.click(completeButton);
+
+                    expect(mockUncompleteTodoItem).toHaveBeenCalled();
                 });
-                mockUseQueryClient.mockReturnValue(queryClient);
 
-                const invalidateQueriesSpy = vi.spyOn(queryClient, 'invalidateQueries');
+                it('invalidates the query after uncompletion', async () => {
+                    mockUncompleteTodoItem.mockResolvedValue(undefined);
 
-                const result = render(
-                    <QueryClientProvider client={queryClient}>
-                        <ItemCtrlButtons completed={false} id="1" />
-                    </QueryClientProvider>
-                );
+                    const user = userEvent.setup();
 
-                const completeButton = result.getByRole('button', { name: 'Complete' });
-                await user.click(completeButton);
+                    const queryClient = new QueryClient({
+                        defaultOptions: {
+                            queries: {
+                                retry: false,
+                            },
+                        },
+                    });
+                    mockUseQueryClient.mockReturnValue(queryClient);
 
-                expect(mockCompleteTodoItem).toHaveBeenCalled();
-                expect(invalidateQueriesSpy).not.toHaveBeenCalled();
+                    const invalidateQueriesSpy = vi.spyOn(queryClient, 'invalidateQueries');
+
+                    const result = render(
+                        <QueryClientProvider client={queryClient}>
+                            <ItemCtrlButtons completed={true} id="1" />
+                        </QueryClientProvider>
+                    );
+
+                    const completeButton = result.getByRole('button', { name: 'Completed' });
+                    await user.click(completeButton);
+
+                    expect(invalidateQueriesSpy).toHaveBeenCalledWith({ queryKey: ['todoItems'] });
+                });
+            });
+
+            describe('failure case', () => {
+                it('does not invalidate the query if uncompletion fails', async () => {
+                    mockUncompleteTodoItem.mockRejectedValue(new Error('Uncompletion failed'));
+
+                    const user = userEvent.setup();
+
+                    const queryClient = new QueryClient({
+                        defaultOptions: {
+                            queries: {
+                                retry: false,
+                            },
+                        },
+                    });
+                    mockUseQueryClient.mockReturnValue(queryClient);
+
+                    const invalidateQueriesSpy = vi.spyOn(queryClient, 'invalidateQueries');
+
+                    const result = render(
+                        <QueryClientProvider client={queryClient}>
+                            <ItemCtrlButtons completed={true} id="1" />
+                        </QueryClientProvider>
+                    );
+
+                    const completeButton = result.getByRole('button', { name: 'Completed' });
+                    await user.click(completeButton);
+
+                    expect(mockUncompleteTodoItem).toHaveBeenCalled();
+                    expect(invalidateQueriesSpy).not.toHaveBeenCalled();
+                });
             });
         });
     });

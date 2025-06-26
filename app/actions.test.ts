@@ -1,18 +1,20 @@
-import { dbFetchAllTodoItems, dbCreateTodoItem, dbDeleteTodoItem, dbCompleteTodoItem } from "@/lib/db/todo-items";
+import { dbFetchAllTodoItems, dbCreateTodoItem, dbDeleteTodoItem, dbCompleteTodoItem, dbUncompleteTodoItem } from "@/lib/db/todo-items";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { completeTodoItem, deleteTodoItem, getTodoItems, registerTodoItem } from "./actions";
+import { completeTodoItem, deleteTodoItem, getTodoItems, registerTodoItem, uncompleteTodoItem } from "./actions";
 
 vi.mock('@/lib/db/todo-items', () => ({
     dbFetchAllTodoItems: vi.fn(),
     dbCreateTodoItem: vi.fn(),
     dbDeleteTodoItem: vi.fn(),
     dbCompleteTodoItem: vi.fn(),
+    dbUncompleteTodoItem: vi.fn(),
 }));
 
 const mockDbFetchAllTodoItems = vi.mocked(dbFetchAllTodoItems);
 const mockDbCreateTodoItem = vi.mocked(dbCreateTodoItem);
 const mockDbDeleteTodoItem = vi.mocked(dbDeleteTodoItem);
 const mockDbCompleteTodoItem = vi.mocked(dbCompleteTodoItem);
+const mockDbUncompleteTodoItem = vi.mocked(dbUncompleteTodoItem);
 
 describe('Server Actions', () => {
     beforeEach(() => {
@@ -72,6 +74,17 @@ describe('Server Actions', () => {
             await completeTodoItem(formData);
 
             expect(mockDbCompleteTodoItem).toHaveBeenCalledWith('1');
+        });
+    });
+
+    describe('uncompleteTodoItem', () => {
+        it('attempts uncompleting a todo item', async () => {
+            const formData = new FormData();
+            formData.append('id', '1');
+
+            await uncompleteTodoItem(formData);
+
+            expect(mockDbUncompleteTodoItem).toHaveBeenCalledWith('1');
         });
     });
 });

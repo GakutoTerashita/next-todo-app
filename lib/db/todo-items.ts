@@ -4,7 +4,7 @@ import { todo_item } from "@prisma/client";
 export const dbFetchAllTodoItems = async (): Promise<todo_item[]> => {
     const todoItems = await prisma.todo_item.findMany();
     return todoItems;
-}
+};
 
 export const dbCreateTodoItem = async (data: Omit<todo_item, 'id' | 'completed'>): Promise<todo_item> => {
     const newTodoItem = await prisma.todo_item.create({
@@ -15,7 +15,7 @@ export const dbCreateTodoItem = async (data: Omit<todo_item, 'id' | 'completed'>
         },
     });
     return newTodoItem;
-}
+};
 
 export const dbDeleteTodoItem = async (id: string): Promise<todo_item> => {
     const deletedTodoItem = await prisma.todo_item.delete({
@@ -30,4 +30,12 @@ export const dbCompleteTodoItem = async (id: string): Promise<todo_item> => {
         data: { completed: true },
     });
     return updatedTodoItem;
-}
+};
+
+export const dbUncompleteTodoItem = async (id: string): Promise<todo_item> => {
+    const updatedTodoItem = await prisma.todo_item.update({
+        where: { id },
+        data: { completed: false },
+    });
+    return updatedTodoItem;
+};

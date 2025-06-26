@@ -1,4 +1,4 @@
-import { completeTodoItem, deleteTodoItem } from "@/app/actions";
+import { completeTodoItem, deleteTodoItem, uncompleteTodoItem } from "@/app/actions";
 import { Button } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import React from "react";
@@ -22,10 +22,16 @@ const ItemCtrlButtons = (props: Props) => {
             queryClient.invalidateQueries({ queryKey: ["todoItems"] });
         },
     });
+    const mutUncomplete = useMutation({
+        mutationFn: uncompleteTodoItem,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["todoItems"] });
+        },
+    });
 
     return (
         <React.Fragment>
-            <form action={mutComplete.mutate}>
+            <form action={props.completed ? mutUncomplete.mutate : mutComplete.mutate}>
                 <input type="hidden" name="id" value={props.id} />
                 <Button
                     variant="contained"

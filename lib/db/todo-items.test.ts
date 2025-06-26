@@ -1,6 +1,6 @@
 import { describe, expect, vi, beforeEach, it } from "vitest";
 import { prisma } from "@/lib/prisma";
-import { dbCreateTodoItem, dbDeleteTodoItem, dbFetchAllTodoItems, dbCompleteTodoItem } from "./todo-items";
+import { dbCreateTodoItem, dbDeleteTodoItem, dbFetchAllTodoItems, dbCompleteTodoItem, dbUncompleteTodoItem } from "./todo-items";
 
 vi.mock('@/lib/prisma', () => ({
     prisma: {
@@ -208,6 +208,55 @@ describe('dbCompleteTodoItem', () => {
             expect(mockUpdate).toHaveBeenCalledWith({
                 where: { id: '1' },
                 data: { completed: true },
+            });
+        });
+    });
+});
+
+describe('dbUncompleteTodoItem', () => {
+    describe('success case', () => {
+        beforeEach(() => {
+            vi.clearAllMocks();
+        });
+
+        it('sets the completion status of a todo item false', async () => {
+            const mockTodoItem = {
+                id: '1',
+                title: 'Test Todo',
+                description: 'Description',
+                deadline: null,
+                completed: true,
+            };
+
+            mockUpdate.mockResolvedValue({
+                ...mockTodoItem,
+                completed: false,
+            });
+
+            const updatedItem = await dbUncompleteTodoItem('1');
+
+            expect(updatedItem.completed).toBe(false);
+            expect(mockUpdate).toHaveBeenCalledTimes(1);
+            expect(mockUpdate).toHaveBeenCalledWith({
+                where: { id: '1' },
+                data: { completed: false },
+            });
+        });
+    });
+
+    describe('failure case', () => {
+        beforeEach(() => {
+            vi.clearAllMocks();
+        });
+
+        it('throws an error when uncompleting a todo item fails', async () => {
+            mockUpdate.mockRejectedValue(new Error("Database error"));
+
+            await expect(dbUncompleteTodoItem('1')).rejects.toThrow("Database error");
+            expect(mockUpdate).toHaveBeenCalledTimes(1);
+            expect(mockUpdate).toHaveBeenCalledWith({
+                where: { id: '1' },
+                data: { completed: false },
             });
         });
     });
