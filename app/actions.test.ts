@@ -1,6 +1,6 @@
-import { dbFetchAllTodoItems, dbCreateTodoItem, dbDeleteTodoItem, dbCompleteTodoItem, dbUncompleteTodoItem } from "@/lib/db/todo-items";
+import { dbFetchAllTodoItems, dbCreateTodoItem, dbDeleteTodoItem, dbCompleteTodoItem, dbUncompleteTodoItem, dbUpdateTodoItem } from "@/lib/db/todo-items";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { completeTodoItem, deleteTodoItem, getTodoItems, registerTodoItem, uncompleteTodoItem } from "./actions";
+import { completeTodoItem, deleteTodoItem, getTodoItems, registerTodoItem, uncompleteTodoItem, updateTodoItem } from "./actions";
 
 vi.mock('@/lib/db/todo-items', () => ({
     dbFetchAllTodoItems: vi.fn(),
@@ -8,6 +8,7 @@ vi.mock('@/lib/db/todo-items', () => ({
     dbDeleteTodoItem: vi.fn(),
     dbCompleteTodoItem: vi.fn(),
     dbUncompleteTodoItem: vi.fn(),
+    dbUpdateTodoItem: vi.fn(),
 }));
 
 const mockDbFetchAllTodoItems = vi.mocked(dbFetchAllTodoItems);
@@ -15,6 +16,7 @@ const mockDbCreateTodoItem = vi.mocked(dbCreateTodoItem);
 const mockDbDeleteTodoItem = vi.mocked(dbDeleteTodoItem);
 const mockDbCompleteTodoItem = vi.mocked(dbCompleteTodoItem);
 const mockDbUncompleteTodoItem = vi.mocked(dbUncompleteTodoItem);
+const mockDbUpdateTodoItem = vi.mocked(dbUpdateTodoItem);
 
 describe('Server Actions', () => {
     beforeEach(() => {
@@ -85,6 +87,24 @@ describe('Server Actions', () => {
             await uncompleteTodoItem(formData);
 
             expect(mockDbUncompleteTodoItem).toHaveBeenCalledWith('1');
+        });
+    });
+
+    describe('updateTodoItem', () => {
+        it('attempts updating a todo item', async () => {
+            const formData = new FormData();
+            formData.append('id', '1');
+            formData.append('title', 'Updated Todo Item');
+            formData.append('description', 'Updated description');
+            formData.append('deadline', '2024-01-01');
+
+            await updateTodoItem(formData);
+
+            expect(mockDbUpdateTodoItem).toHaveBeenCalledWith('1', {
+                title: 'Updated Todo Item',
+                description: 'Updated description',
+                deadline: new Date('2024-01-01'),
+            });
         });
     });
 });
