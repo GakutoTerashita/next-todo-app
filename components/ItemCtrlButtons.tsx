@@ -23,7 +23,7 @@ const ItemCtrlButtons = (props: Props) => {
     const mutUncomplete = useTodoMutation(uncompleteTodoItem);
 
     return (
-        <React.Fragment>
+        <div style={{ display: 'flex', flexDirection: 'row' }}>
             <form action={props.completed ? mutUncomplete.mutate : mutComplete.mutate}>
                 <input type="hidden" name="id" value={props.id} />
                 <Button
@@ -59,7 +59,7 @@ const ItemCtrlButtons = (props: Props) => {
                     Delete
                 </Button>
             </form>
-        </React.Fragment>
+        </div>
     );
 };
 
