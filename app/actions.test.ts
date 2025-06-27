@@ -47,9 +47,7 @@ describe('Server Actions', () => {
             const mockTodoItem = { id: '1', title: 'Test Todo', description: 'Test Description', deadline: null, completed: false };
             mockDbFetchTodoItemById.mockResolvedValue(mockTodoItem);
 
-            const formData = new FormData();
-            formData.append('id', '1');
-            const todoItem = await getTodoItemById(formData);
+            const todoItem = await getTodoItemById('1');
 
             expect(todoItem).toEqual(mockTodoItem);
             expect(mockDbFetchTodoItemById).toHaveBeenCalledWith('1');

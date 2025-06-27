@@ -4,20 +4,12 @@ import { dbCompleteTodoItem, dbCreateTodoItem, dbDeleteTodoItem, dbFetchAllTodoI
 import { todo_item } from "@prisma/client";
 import * as z from "zod/v4";
 
-export const getTodoItems = async () => {
+export const getTodoItems = async (): Promise<todo_item[]> => {
     const todoItems = await dbFetchAllTodoItems();
     return todoItems;
 };
 
-export const getTodoItemById = async (formData: FormData): Promise<todo_item | null> => {
-    const schema = z.object({
-        id: z.string().min(1, "ID is required"),
-    });
-    const parsedData = schema.safeParse(Object.fromEntries(formData));
-    if (!parsedData.success) {
-        throw new Error("Invalid form data");
-    }
-    const { id } = parsedData.data;
+export const getTodoItemById = async (id: string): Promise<todo_item | null> => {
     const todoItem = await dbFetchTodoItemById(id);
     return todoItem;
 };
