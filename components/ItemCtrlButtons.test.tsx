@@ -1,7 +1,7 @@
 import { cleanup, render } from "@testing-library/react";
 import { afterEach, beforeEach, describe, it, vi, expect } from "vitest";
 import ItemCtrlButtons from "./ItemCtrlButtons";
-import { completeTodoItem, deleteTodoItem, uncompleteTodoItem } from "@/app/actions";
+import { completeTodoItem, deleteTodoItem, uncompleteTodoItem, updateTodoItem } from "@/app/actions";
 import { QueryClient, QueryClientProvider, useQueryClient } from "@tanstack/react-query";
 import userEvent from "@testing-library/user-event";
 import { renderWithQueryClientProvider } from "@/test/utils";
@@ -11,6 +11,7 @@ vi.mock('@/app/actions', async (importOriginal) => ({
     deleteTodoItem: vi.fn(),
     completeTodoItem: vi.fn(),
     uncompleteTodoItem: vi.fn(),
+    updateTodoItem: vi.fn(),
 }));
 
 vi.mock('@tanstack/react-query', async (importOriginal) => ({
@@ -21,6 +22,7 @@ vi.mock('@tanstack/react-query', async (importOriginal) => ({
 const mockDeleteTodoItem = vi.mocked(deleteTodoItem);
 const mockCompleteTodoItem = vi.mocked(completeTodoItem);
 const mockUncompleteTodoItem = vi.mocked(uncompleteTodoItem);
+const mockUpdateTodoItem = vi.mocked(updateTodoItem);
 
 const mockUseQueryClient = vi.mocked(useQueryClient);
 
@@ -272,6 +274,70 @@ describe('ItemCtrlButtons', () => {
                     expect(invalidateQueriesSpy).not.toHaveBeenCalled();
                 });
             });
+        });
+    });
+
+    describe('edit button', () => {
+        it('opens dialog for editing todo-item on click', async () => {
+            const user = userEvent.setup();
+
+            const result = renderWithQueryClientProvider(<ItemCtrlButtons completed={false} id="1" />);
+
+            const editButton = result.getByRole('button', { name: 'Edit' });
+            await user.click(editButton);
+
+            expect(result.getByText('Edit TodoItem')).toBeInTheDocument();
+        });
+
+        it('calls updateTodoItem when confirm button is clicked in dialog', async () => {
+            const user = userEvent.setup();
+
+            const result = renderWithQueryClientProvider(
+                <ItemCtrlButtons completed={false} id="1" />
+            );
+
+            const editButton = result.getByRole('button', { name: 'Edit' });
+            await user.click(editButton);
+
+            const confirmButton = result.getByRole('button', { name: 'Confirm' });
+            await user.click(confirmButton);
+
+            expect(mockUpdateTodoItem).toHaveBeenCalled();
+        });
+
+        it('closes dialog when cancel button is clicked', async () => {
+            const user = userEvent.setup();
+
+            const result = renderWithQueryClientProvider(
+                <ItemCtrlButtons completed={false} id="1" />
+            );
+
+            const editButton = result.getByRole('button', { name: 'Edit' });
+            await user.click(editButton);
+
+            const cancelButton = result.getByRole('button', { name: 'Cancel' });
+            await user.click(cancelButton);
+
+            expect(result.queryByText('Edit TodoItem')).not.toBeInTheDocument();
+        });
+
+        it('closes dialog when sucessfully updates item', async () => {
+            const user = userEvent.setup();
+
+            mockUpdateTodoItem.mockResolvedValue(undefined);
+
+            const result = renderWithQueryClientProvider(
+                <ItemCtrlButtons completed={false} id="1" />
+            );
+
+            const editButton = result.getByRole('button', { name: 'Edit' });
+            await user.click(editButton);
+
+            const confirmButton = result.getByRole('button', { name: 'Confirm' });
+            await user.click(confirmButton);
+
+            expect(mockUpdateTodoItem).toHaveBeenCalled();
+            expect(result.queryByText('Edit TodoItem')).not.toBeInTheDocument();
         });
     });
 });

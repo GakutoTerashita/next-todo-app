@@ -1,8 +1,9 @@
-import { completeTodoItem, deleteTodoItem, uncompleteTodoItem } from "@/app/actions";
+import { completeTodoItem, deleteTodoItem, uncompleteTodoItem, updateTodoItem } from "@/app/actions";
+import useItemEditDialog from "@/hooks/useItemEditDialog";
 import useTodoMutation from "@/hooks/useTodoMutation";
 import { Button } from "@mui/material";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import React from "react";
+import ItemEditDialog from "./ItemEditDialog";
 
 interface Props {
     completed: boolean;
@@ -10,7 +11,17 @@ interface Props {
 }
 
 const ItemCtrlButtons = (props: Props) => {
+    const {
+        open: editDialogOpen,
+        handleOpen,
+        handleClose
+    } = useItemEditDialog();
+
     const mutDelete = useTodoMutation(deleteTodoItem);
+    const mutEdit = useTodoMutation(
+        updateTodoItem,
+        handleClose,
+    );
     const mutComplete = useTodoMutation(completeTodoItem);
     const mutUncomplete = useTodoMutation(uncompleteTodoItem);
 
@@ -30,13 +41,17 @@ const ItemCtrlButtons = (props: Props) => {
             <Button
                 variant="outlined"
                 color="secondary"
-                onClick={() => {
-                    console.log(`Edit props.item ${props.id}`);
-                }}
+                onClick={handleOpen}
                 sx={{ marginRight: 1 }}
             >
                 Edit
             </Button>
+            <ItemEditDialog
+                itemId={props.id}
+                mutate={mutEdit.mutate}
+                open={editDialogOpen}
+                handleClose={handleClose}
+            />
             <form action={mutDelete.mutate}>
                 <input type="hidden" name="id" value={props.id} />
                 <Button
