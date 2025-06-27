@@ -19,7 +19,7 @@ const ItemRegistrationForm = () => {
 
     return (
         <React.Fragment>
-            <form action={mutation.mutate}>
+            <form action={mutation.mutate} style={{ display: 'flex', flexDirection: 'row', gap: 2 }}>
                 <TextField
                     type="text"
                     name="title"
@@ -33,6 +33,7 @@ const ItemRegistrationForm = () => {
                     label="description"
                     defaultValue=""
                     placeholder="Enter item description"
+                    sx={{ flexGrow: 1 }}
                 />
                 <TextField
                     type="date"
@@ -42,6 +43,10 @@ const ItemRegistrationForm = () => {
                 />
                 <Button
                     type="submit"
+                    variant="contained"
+                    color="primary"
+                    disabled={mutation.isPending}
+                    loading={mutation.isPending}
                 >
                     Add Item
                 </Button>

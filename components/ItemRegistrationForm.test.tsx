@@ -143,4 +143,23 @@ describe('ItemRegistrationForm', () => {
             expect(invalidateQueriesSpy).toHaveBeenCalledWith({ queryKey: ['todoItems'] });
         });
     });
+
+    it('button is disabled while mutation is in progress', async () => {
+        const user = userEvent.setup();
+        const result = renderWithQueryClientProvider(<ItemRegistrationForm />);
+
+        const titleInput = result.getByRole('textbox', { name: 'title' }) as HTMLInputElement;
+        const descriptionInput = result.getByRole('textbox', { name: 'description' }) as HTMLInputElement;
+        const datePicker = result.getByLabelText('deadline') as HTMLInputElement;
+        const submitButton = result.getByRole('button', { name: 'Add Item' });
+
+        mockRegisterTodoItem.mockImplementation(() => new Promise(() => { })); // Simulate a pending mutation
+
+        await user.type(titleInput, 'Test Item');
+        await user.type(descriptionInput, 'This is a test item description.');
+        await user.type(datePicker, '2023-10-01');
+        await user.click(submitButton);
+
+        expect(submitButton).toBeDisabled();
+    });
 });
