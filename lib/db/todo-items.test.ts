@@ -1,6 +1,6 @@
 import { describe, expect, vi, beforeEach, it } from "vitest";
 import { prisma } from "@/lib/prisma";
-import { dbCreateTodoItem, dbDeleteTodoItem, dbFetchAllTodoItems, dbCompleteTodoItem, dbUncompleteTodoItem, dbFetchTodoItemById } from "./todo-items";
+import { dbCreateTodoItem, dbDeleteTodoItem, dbFetchAllTodoItems, dbCompleteTodoItem, dbUncompleteTodoItem, dbFetchTodoItemById, dbUpdateTodoItem } from "./todo-items";
 
 vi.mock('@/lib/prisma', () => ({
     prisma: {
@@ -317,6 +317,54 @@ describe('dbUncompleteTodoItem', () => {
                 where: { id: '1' },
                 data: { completed: false },
             });
+        });
+    });
+});
+
+describe('dbUpdateTodoItem', () => {
+    describe('success case', () => {
+        beforeEach(() => {
+            vi.clearAllMocks();
+        });
+
+        it('updates a todo item in the database', async () => {
+            const mockTodoItem = {
+                id: '1',
+                title: 'Updated Todo',
+                description: 'Updated Description',
+                deadline: null,
+                completed: false,
+            };
+
+            mockUpdate.mockResolvedValue(mockTodoItem);
+
+            const updatedItem = await dbUpdateTodoItem('1', {
+                title: 'Updated Todo',
+                description: 'Updated Description',
+            });
+
+            expect(updatedItem).toEqual(mockTodoItem);
+            expect(mockUpdate).toHaveBeenCalledTimes(1);
+            expect(mockUpdate).toHaveBeenCalledWith({
+                where: { id: '1' },
+                data: {
+                    title: 'Updated Todo',
+                    description: 'Updated Description',
+                },
+            });
+        });
+    });
+
+    describe('failure case', () => {
+        beforeEach(() => {
+            vi.clearAllMocks();
+        });
+
+        it('throws an error when updating a todo item fails', async () => {
+            mockUpdate.mockRejectedValue(new Error("Database error"));
+
+            await expect(dbUpdateTodoItem('1', { title: 'Updated Todo' })).rejects.toThrow("Database error");
+            expect(mockUpdate).toHaveBeenCalledTimes(1);
         });
     });
 });

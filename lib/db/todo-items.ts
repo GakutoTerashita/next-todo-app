@@ -46,3 +46,11 @@ export const dbUncompleteTodoItem = async (id: string): Promise<todo_item> => {
     });
     return updatedTodoItem;
 };
+
+export const dbUpdateTodoItem = async (id: string, data: Partial<Omit<todo_item, 'id'>>): Promise<todo_item> => {
+    const updatedTodoItem = await prisma.todo_item.update({
+        where: { id },
+        data,
+    });
+    return updatedTodoItem;
+}
