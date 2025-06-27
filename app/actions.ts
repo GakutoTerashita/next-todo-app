@@ -1,11 +1,25 @@
 "use server";
 
-import { dbCompleteTodoItem, dbCreateTodoItem, dbDeleteTodoItem, dbFetchAllTodoItems, dbUncompleteTodoItem, dbUpdateTodoItem } from "@/lib/db/todo-items";
+import { dbCompleteTodoItem, dbCreateTodoItem, dbDeleteTodoItem, dbFetchAllTodoItems, dbFetchTodoItemById, dbUncompleteTodoItem, dbUpdateTodoItem } from "@/lib/db/todo-items";
+import { todo_item } from "@prisma/client";
 import * as z from "zod/v4";
 
 export const getTodoItems = async () => {
     const todoItems = await dbFetchAllTodoItems();
     return todoItems;
+};
+
+export const getTodoItemById = async (formData: FormData): Promise<todo_item | null> => {
+    const schema = z.object({
+        id: z.string().min(1, "ID is required"),
+    });
+    const parsedData = schema.safeParse(Object.fromEntries(formData));
+    if (!parsedData.success) {
+        throw new Error("Invalid form data");
+    }
+    const { id } = parsedData.data;
+    const todoItem = await dbFetchTodoItemById(id);
+    return todoItem;
 };
 
 export const registerTodoItem = async (formData: FormData) => {
