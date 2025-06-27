@@ -1,4 +1,4 @@
-import { cleanup, render } from "@testing-library/react";
+import { cleanup, render, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, it, vi, expect } from "vitest";
 import ItemCtrlButtons from "./ItemCtrlButtons";
 import { completeTodoItem, deleteTodoItem, uncompleteTodoItem, updateTodoItem } from "@/app/actions";
@@ -318,10 +318,12 @@ describe('ItemCtrlButtons', () => {
             const cancelButton = result.getByRole('button', { name: 'Cancel' });
             await user.click(cancelButton);
 
-            expect(result.queryByText('Edit TodoItem')).not.toBeInTheDocument();
+            await waitFor(() => {
+                expect(result.queryByText('Edit TodoItem')).not.toBeInTheDocument();
+            });
         });
 
-        it('closes dialog when sucessfully updates item', async () => {
+        it('closes dialog when item is updated successfully', async () => {
             const user = userEvent.setup();
 
             mockUpdateTodoItem.mockResolvedValue(undefined);
@@ -337,7 +339,9 @@ describe('ItemCtrlButtons', () => {
             await user.click(confirmButton);
 
             expect(mockUpdateTodoItem).toHaveBeenCalled();
-            expect(result.queryByText('Edit TodoItem')).not.toBeInTheDocument();
+            await waitFor(() => {
+                expect(result.queryByText('Edit TodoItem')).not.toBeInTheDocument();
+            });
         });
     });
 });
