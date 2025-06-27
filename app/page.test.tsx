@@ -34,8 +34,8 @@ describe('Root Page', () => {
         const result = renderWithQueryClientProvider(<Home />);
 
         await waitFor(async () => {
-            expect(await result.findByText('Item 1'));
-            expect(await result.findByText('Item 2'));
+            expect(await result.findByText('Item 1')).toBeInTheDocument();
+            expect(await result.findByText('Item 2')).toBeInTheDocument();
         });
     });
 
@@ -55,10 +55,10 @@ describe('Root Page', () => {
         );
 
         await waitFor(() => {
-            expect(result.getByRole('textbox', { name: 'title' }));
-            expect(result.getByRole('textbox', { name: 'description' }));
-            expect(result.getByLabelText('deadline'));
-            expect(result.getByRole('button', { name: 'Add Item' }));
+            expect(result.getByRole('textbox', { name: 'title' })).toBeInTheDocument();
+            expect(result.getByRole('textbox', { name: 'description' })).toBeInTheDocument();
+            expect(result.getByLabelText('deadline')).toBeInTheDocument();
+            expect(result.getByRole('button', { name: 'Add Item' })).toBeInTheDocument();
         });
     });
 });

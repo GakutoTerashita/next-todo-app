@@ -22,9 +22,9 @@ describe("ItemEditDialog", () => {
             />
         );
 
-        expect(getByLabelText("Title"));
-        expect(getByLabelText("Description"));
-        expect(getByLabelText("Deadline"));
+        expect(getByLabelText("Title")).toBeInTheDocument();
+        expect(getByLabelText("Description")).toBeInTheDocument();
+        expect(getByLabelText("Deadline")).toBeInTheDocument();
     })
 
     it('has confirm button', () => {
@@ -37,10 +37,10 @@ describe("ItemEditDialog", () => {
             />
         );
 
-        expect(getByRole("button", { name: "Confirm" }));
+        expect(getByRole("button", { name: "Confirm" })).toBeInTheDocument();
     });
 
-    it('calls the mutate function when button is clicked', async () => {
+    it('calls the mutate function when confirm button is clicked', async () => {
         const user = userEvent.setup();
         const mockMutate = vi.fn();
         const { getByRole, getByLabelText } = render(
@@ -63,6 +63,24 @@ describe("ItemEditDialog", () => {
         await user.click(confirmButton);
 
         expect(mockMutate).toHaveBeenCalled();
+    });
+
+    it('calls handleClose when cancel button is clicked', async () => {
+        const user = userEvent.setup();
+        const mockHandleClose = vi.fn();
+        const { getByRole } = render(
+            <ItemEditDialog
+                itemId="test-id"
+                mutate={() => { }}
+                open={true}
+                handleClose={mockHandleClose}
+            />
+        );
+
+        const cancelButton = getByRole("button", { name: "Cancel" });
+        await user.click(cancelButton);
+
+        expect(mockHandleClose).toHaveBeenCalled();
     });
 
     it('hidden input has correct itemId', () => {
