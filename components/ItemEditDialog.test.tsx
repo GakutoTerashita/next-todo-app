@@ -1,7 +1,17 @@
-import { cleanup, render } from "@testing-library/react";
+import { cleanup, render, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import ItemEditDialog from "./ItemEditDialog";
+import { renderWithQueryClientProvider } from "@/test/utils";
+
+vi.mock("@/lib/db/todo-items", () => ({
+    getTodoItemById: vi.fn().mockResolvedValue({
+        id: "test-id",
+        title: "Test Item",
+        description: "This is a test item.",
+        deadline: "2023-12-31",
+    }),
+}));
 
 describe("ItemEditDialog", () => {
     beforeEach(() => {
@@ -12,8 +22,12 @@ describe("ItemEditDialog", () => {
         cleanup();
     });
 
+    it('fetches the associated item data on dialog opened, and show them', () => {
+        throw new Error("Test not implemented yet");
+    });
+
     it('has correct form inputs', () => {
-        const { getByLabelText } = render(
+        const { getByLabelText } = renderWithQueryClientProvider(
             <ItemEditDialog
                 itemId="test-id"
                 mutate={() => { }}
@@ -28,7 +42,7 @@ describe("ItemEditDialog", () => {
     })
 
     it('has confirm button', () => {
-        const { getByRole } = render(
+        const { getByRole } = renderWithQueryClientProvider(
             <ItemEditDialog
                 itemId="test-id"
                 mutate={() => { }}
@@ -43,7 +57,7 @@ describe("ItemEditDialog", () => {
     it('calls the mutate function when confirm button is clicked', async () => {
         const user = userEvent.setup();
         const mockMutate = vi.fn();
-        const { getByRole, getByLabelText } = render(
+        const { getByRole, getByLabelText } = renderWithQueryClientProvider(
             <ItemEditDialog
                 itemId="test-id"
                 mutate={mockMutate}
@@ -68,7 +82,7 @@ describe("ItemEditDialog", () => {
     it('calls handleClose when cancel button is clicked', async () => {
         const user = userEvent.setup();
         const mockHandleClose = vi.fn();
-        const { getByRole } = render(
+        const { getByRole } = renderWithQueryClientProvider(
             <ItemEditDialog
                 itemId="test-id"
                 mutate={() => { }}
@@ -83,8 +97,29 @@ describe("ItemEditDialog", () => {
         expect(mockHandleClose).toHaveBeenCalled();
     });
 
+    it('is capable to close the dialog when mutate function resolved successfully', async () => {
+        const user = userEvent.setup();
+        const mockMutate = vi.fn().mockResolvedValueOnce({});
+        const mockHandleClose = vi.fn();
+        const { getByRole } = renderWithQueryClientProvider(
+            <ItemEditDialog
+                itemId="test-id"
+                mutate={mockMutate}
+                open={true}
+                onClose={mockHandleClose}
+            />
+        );
+        const confirmButton = getByRole("button", { name: "Confirm" });
+        await user.click(confirmButton);
+
+        await waitFor(() => {
+            expect(mockMutate).toHaveBeenCalled();
+            expect(mockHandleClose).toHaveBeenCalled();
+        });
+    });
+
     it('hidden input has correct itemId', () => {
-        render(<ItemEditDialog
+        renderWithQueryClientProvider(<ItemEditDialog
             itemId="test-id"
             mutate={() => { }}
             open={true}
