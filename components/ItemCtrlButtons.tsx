@@ -18,10 +18,7 @@ const ItemCtrlButtons = (props: Props) => {
     } = useItemEditDialog();
 
     const mutDelete = useTodoMutation(deleteTodoItem);
-    const mutEdit = useTodoMutation(
-        updateTodoItem,
-        handleClose,
-    );
+    const mutEdit = useTodoMutation(updateTodoItem, handleClose);
     const mutComplete = useTodoMutation(completeTodoItem);
     const mutUncomplete = useTodoMutation(uncompleteTodoItem);
 
