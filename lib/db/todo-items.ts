@@ -6,6 +6,13 @@ export const dbFetchAllTodoItems = async (): Promise<todo_item[]> => {
     return todoItems;
 };
 
+export const dbFetchTodoItemById = async (id: string): Promise<todo_item | null> => {
+    const todoItem = await prisma.todo_item.findUnique({
+        where: { id },
+    });
+    return todoItem;
+};
+
 export const dbCreateTodoItem = async (data: Omit<todo_item, 'id' | 'completed'>): Promise<todo_item> => {
     const newTodoItem = await prisma.todo_item.create({
         data: {

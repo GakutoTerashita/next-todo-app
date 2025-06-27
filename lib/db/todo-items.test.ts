@@ -1,11 +1,12 @@
 import { describe, expect, vi, beforeEach, it } from "vitest";
 import { prisma } from "@/lib/prisma";
-import { dbCreateTodoItem, dbDeleteTodoItem, dbFetchAllTodoItems, dbCompleteTodoItem, dbUncompleteTodoItem } from "./todo-items";
+import { dbCreateTodoItem, dbDeleteTodoItem, dbFetchAllTodoItems, dbCompleteTodoItem, dbUncompleteTodoItem, dbFetchTodoItemById } from "./todo-items";
 
 vi.mock('@/lib/prisma', () => ({
     prisma: {
         todo_item: {
             findMany: vi.fn(),
+            findUnique: vi.fn(),
             create: vi.fn(),
             delete: vi.fn(),
             update: vi.fn(),
@@ -14,6 +15,7 @@ vi.mock('@/lib/prisma', () => ({
 }));
 
 const mockFindMany = vi.mocked(prisma.todo_item.findMany);
+const mockFindUnique = vi.mocked(prisma.todo_item.findUnique);
 const mockCreate = vi.mocked(prisma.todo_item.create);
 const mockDelete = vi.mocked(prisma.todo_item.delete);
 const mockUpdate = vi.mocked(prisma.todo_item.update);
@@ -62,6 +64,63 @@ describe('dbFetchAllTodoItems', () => {
 
             await expect(dbFetchAllTodoItems()).rejects.toThrow("Database error");
             expect(mockFindMany).toHaveBeenCalledTimes(1);
+        });
+    });
+});
+
+describe('dbFetchTodoItemById', () => {
+    describe('success case', () => {
+        beforeEach(() => {
+            vi.clearAllMocks();
+            mockFindUnique.mockReset();
+        });
+
+        it('fetches a todo item by ID from the database', async () => {
+            const mockTodoItem = {
+                id: '1',
+                title: 'Test Todo',
+                description: 'Description',
+                deadline: null,
+                completed: false,
+            };
+
+            mockFindUnique.mockResolvedValue(mockTodoItem);
+
+            const todoItem = await dbFetchTodoItemById('1');
+
+            expect(todoItem).toEqual(mockTodoItem);
+            expect(mockFindUnique).toHaveBeenCalledTimes(1);
+            expect(mockFindUnique).toHaveBeenCalledWith({
+                where: { id: '1' },
+            });
+        });
+    });
+
+    describe('failure case', () => {
+        beforeEach(() => {
+            vi.clearAllMocks();
+        });
+
+        it('returns null when no todo item is found by ID', async () => {
+            mockFindUnique.mockResolvedValue(null);
+
+            const todoItem = await dbFetchTodoItemById('1');
+
+            expect(todoItem).toBeNull();
+            expect(mockFindUnique).toHaveBeenCalledTimes(1);
+            expect(mockFindUnique).toHaveBeenCalledWith({
+                where: { id: '1' },
+            });
+        });
+
+        it('throws an error when database query fails', async () => {
+            mockFindUnique.mockRejectedValue(new Error("Database error"));
+
+            await expect(dbFetchTodoItemById('1')).rejects.toThrow("Database error");
+            expect(mockFindUnique).toHaveBeenCalledTimes(1);
+            expect(mockFindUnique).toHaveBeenCalledWith({
+                where: { id: '1' },
+            });
         });
     });
 });
