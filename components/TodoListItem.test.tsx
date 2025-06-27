@@ -19,7 +19,7 @@ describe('TodoListItem', () => {
         }
         const result = renderWithQueryClientProvider(<TodoListItem item={item} />);
 
-        expect(result.getByText("Test Item"));
+        expect(result.getByText("Test Item")).toBeInTheDocument();
     });
 
     it('renders description of item', () => {
@@ -32,7 +32,7 @@ describe('TodoListItem', () => {
         }
         const result = renderWithQueryClientProvider(<TodoListItem item={item} />);
 
-        expect(result.getByText("This is another test item."));
+        expect(result.getByText("This is another test item.")).toBeInTheDocument();
     });
 
     it('renders deadline of item', () => {
@@ -45,7 +45,7 @@ describe('TodoListItem', () => {
         }
         const result = renderWithQueryClientProvider(<TodoListItem item={item} />);
 
-        expect(result.getByText("Deadline: 2023/10/03"));
+        expect(result.getByText("Deadline: 2023/10/03")).toBeInTheDocument();
     });
 
     it('does not render deadline if it does not exist', () => {
@@ -71,8 +71,8 @@ describe('TodoListItem', () => {
         }
         const result = renderWithQueryClientProvider(<TodoListItem item={item} />);
 
-        expect(result.getByRole('button', { name: /complete/i }));
-        expect(result.getByRole('button', { name: /edit/i }));
-        expect(result.getByRole('button', { name: /delete/i }));
+        expect(result.getByRole('button', { name: /complete/i })).toBeInTheDocument();
+        expect(result.getByRole('button', { name: /edit/i })).toBeInTheDocument();
+        expect(result.getByRole('button', { name: /delete/i })).toBeInTheDocument();
     })
 });
