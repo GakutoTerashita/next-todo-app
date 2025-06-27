@@ -41,8 +41,8 @@ describe('ItemRegistrationForm', () => {
     it('renders 2 input fields with placeholders', () => {
         const result = renderWithQueryClientProvider(<ItemRegistrationForm />);
 
-        expect(result.getByRole('textbox', { name: 'title' }));
-        expect(result.getByRole('textbox', { name: 'description' }));
+        expect(result.getByRole('textbox', { name: 'title' })).toBeInTheDocument();
+        expect(result.getByRole('textbox', { name: 'description' })).toBeInTheDocument();
     });
 
     it('renders a date picker', () => {
