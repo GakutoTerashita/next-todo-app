@@ -18,7 +18,7 @@ describe("ItemEditDialog", () => {
                 itemId="test-id"
                 mutate={() => { }}
                 open={true}
-                handleClose={() => { }}
+                onClose={() => { }}
             />
         );
 
@@ -33,7 +33,7 @@ describe("ItemEditDialog", () => {
                 itemId="test-id"
                 mutate={() => { }}
                 open={true}
-                handleClose={() => { }}
+                onClose={() => { }}
             />
         );
 
@@ -48,7 +48,7 @@ describe("ItemEditDialog", () => {
                 itemId="test-id"
                 mutate={mockMutate}
                 open={true}
-                handleClose={() => { }}
+                onClose={() => { }}
             />
         );
 
@@ -73,7 +73,7 @@ describe("ItemEditDialog", () => {
                 itemId="test-id"
                 mutate={() => { }}
                 open={true}
-                handleClose={mockHandleClose}
+                onClose={mockHandleClose}
             />
         );
 
@@ -88,7 +88,7 @@ describe("ItemEditDialog", () => {
             itemId="test-id"
             mutate={() => { }}
             open={true}
-            handleClose={() => { }}
+            onClose={() => { }}
         />);
 
         const hiddenInput = document.querySelector('input[name="id"]') as HTMLInputElement;

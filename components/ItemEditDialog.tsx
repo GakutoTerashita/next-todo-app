@@ -6,16 +6,16 @@ const ItemEditDialog = ({
     itemId,
     mutate,
     open,
-    handleClose,
+    onClose,
 }: {
     itemId: string;
     mutate: (formData: FormData) => void;
     open: boolean;
-    handleClose: () => void;
+    onClose: () => void;
 }) => {
 
     return (
-        <Dialog open={open} onClose={handleClose}>
+        <Dialog open={open} onClose={onClose}>
             <DialogTitle>Edit TodoItem</DialogTitle>
             <DialogContent>
                 <DialogContentText>
@@ -52,7 +52,7 @@ const ItemEditDialog = ({
                 </form>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleClose}>Cancel</Button>
+                <Button onClick={onClose}>Cancel</Button>
                 <Button type="submit" form={`edit-form-${itemId}`}>Confirm</Button>
             </DialogActions>
         </Dialog>

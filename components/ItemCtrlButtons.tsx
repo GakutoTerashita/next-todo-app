@@ -50,7 +50,7 @@ const ItemCtrlButtons = (props: Props) => {
                 itemId={props.id}
                 mutate={mutEdit.mutate}
                 open={editDialogOpen}
-                handleClose={handleClose}
+                onClose={handleClose}
             />
             <form action={mutDelete.mutate}>
                 <input type="hidden" name="id" value={props.id} />
