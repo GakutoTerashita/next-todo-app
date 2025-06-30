@@ -46,16 +46,4 @@ describe("ItemEditDialog", () => {
             expect(mockHandleClose).toHaveBeenCalled();
         });
     });
-
-    it('hidden input has correct itemId', () => {
-        renderWithQueryClientProvider(<ItemEditDialog
-            itemId="test-id"
-            mutate={() => { }}
-            open={true}
-            onClose={() => { }}
-        />);
-
-        const hiddenInput = document.querySelector('input[name="id"]') as HTMLInputElement;
-        expect(hiddenInput?.value).toBe("test-id");
-    });
 });
