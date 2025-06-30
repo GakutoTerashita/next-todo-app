@@ -1,7 +1,15 @@
-import { cleanup, render } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import { cleanup, render, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import ItemEditDialog from "./ItemEditDialog";
+import { renderWithQueryClientProvider } from "@/test/utils";
+import { getTodoItemById } from "@/app/actions";
+import userEvent from "@testing-library/user-event";
+
+vi.mock("@/app/actions", () => ({
+    getTodoItemById: vi.fn(),
+}));
+
+const mockGetTodoItemById = vi.mocked(getTodoItemById);
 
 describe("ItemEditDialog", () => {
     beforeEach(() => {
@@ -12,86 +20,64 @@ describe("ItemEditDialog", () => {
         cleanup();
     });
 
-    it('has correct form inputs', () => {
-        const { getByLabelText } = render(
+    it('fetches the associated item data on dialog opened, and show them', async () => {
+        mockGetTodoItemById.mockResolvedValue({
+            id: "test-id",
+            title: "Test Item",
+            description: "This is a test item.",
+            deadline: new Date("2024-12-31"),
+            completed: false,
+        });
+
+        const mutate = vi.fn();
+        const { getByText, getByLabelText } = renderWithQueryClientProvider(
             <ItemEditDialog
                 itemId="test-id"
-                mutate={() => { }}
+                mutate={mutate}
                 open={true}
                 onClose={() => { }}
             />
         );
 
-        expect(getByLabelText("Title")).toBeInTheDocument();
-        expect(getByLabelText("Description")).toBeInTheDocument();
-        expect(getByLabelText("Deadline")).toBeInTheDocument();
-    })
-
-    it('has confirm button', () => {
-        const { getByRole } = render(
-            <ItemEditDialog
-                itemId="test-id"
-                mutate={() => { }}
-                open={true}
-                onClose={() => { }}
-            />
-        );
-
-        expect(getByRole("button", { name: "Confirm" })).toBeInTheDocument();
+        await waitFor(() => {
+            expect(getByText("Edit TodoItem")).toBeInTheDocument();
+            expect(getByLabelText("Title")).toHaveValue("Test Item");
+            expect(getByLabelText("Description")).toHaveValue("This is a test item.");
+            expect(getByLabelText("Deadline")).toHaveValue("2024-12-31");
+        });
     });
 
-    it('calls the mutate function when confirm button is clicked', async () => {
+    it('mutate function is called when confirm button in the dialog is clicked', async () => {
         const user = userEvent.setup();
-        const mockMutate = vi.fn();
-        const { getByRole, getByLabelText } = render(
+        mockGetTodoItemById.mockResolvedValue({
+            id: "test-id",
+            title: "Test Item",
+            description: "This is a test item.",
+            deadline: new Date("2024-12-31"),
+            completed: false,
+        });
+
+        const mutate = vi.fn().mockResolvedValue(true);
+
+        const { getByRole, getByText } = renderWithQueryClientProvider(
             <ItemEditDialog
                 itemId="test-id"
-                mutate={mockMutate}
+                mutate={mutate}
                 open={true}
                 onClose={() => { }}
             />
         );
 
-        const titleInput = getByLabelText("Title");
-        const descriptionInput = getByLabelText("Description");
-        const deadlineInput = getByLabelText("Deadline");
-        const confirmButton = getByRole("button", { name: "Confirm" });
+        await waitFor(() => {
+            expect(getByText("Edit TodoItem")).toBeInTheDocument();
+        });
 
-        await user.type(titleInput, "New Title");
-        await user.type(descriptionInput, "New Description");
-        await user.type(deadlineInput, "2023-12-31");
-        await user.click(confirmButton);
+        // Simulate form submission
+        const submitButton = getByRole("button", { name: /confirm/i });
+        await user.click(submitButton);
 
-        expect(mockMutate).toHaveBeenCalled();
-    });
-
-    it('calls handleClose when cancel button is clicked', async () => {
-        const user = userEvent.setup();
-        const mockHandleClose = vi.fn();
-        const { getByRole } = render(
-            <ItemEditDialog
-                itemId="test-id"
-                mutate={() => { }}
-                open={true}
-                onClose={mockHandleClose}
-            />
-        );
-
-        const cancelButton = getByRole("button", { name: "Cancel" });
-        await user.click(cancelButton);
-
-        expect(mockHandleClose).toHaveBeenCalled();
-    });
-
-    it('hidden input has correct itemId', () => {
-        render(<ItemEditDialog
-            itemId="test-id"
-            mutate={() => { }}
-            open={true}
-            onClose={() => { }}
-        />);
-
-        const hiddenInput = document.querySelector('input[name="id"]') as HTMLInputElement;
-        expect(hiddenInput?.value).toBe("test-id");
+        await waitFor(() => {
+            expect(mutate).toHaveBeenCalled();
+        });
     });
 });

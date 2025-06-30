@@ -1,9 +1,10 @@
-import { dbFetchAllTodoItems, dbCreateTodoItem, dbDeleteTodoItem, dbCompleteTodoItem, dbUncompleteTodoItem, dbUpdateTodoItem } from "@/lib/db/todo-items";
+import { dbFetchAllTodoItems, dbCreateTodoItem, dbDeleteTodoItem, dbCompleteTodoItem, dbUncompleteTodoItem, dbUpdateTodoItem, dbFetchTodoItemById } from "@/lib/db/todo-items";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { completeTodoItem, deleteTodoItem, getTodoItems, registerTodoItem, uncompleteTodoItem, updateTodoItem } from "./actions";
+import { completeTodoItem, deleteTodoItem, getTodoItemById, getTodoItems, registerTodoItem, uncompleteTodoItem, updateTodoItem } from "./actions";
 
 vi.mock('@/lib/db/todo-items', () => ({
     dbFetchAllTodoItems: vi.fn(),
+    dbFetchTodoItemById: vi.fn(),
     dbCreateTodoItem: vi.fn(),
     dbDeleteTodoItem: vi.fn(),
     dbCompleteTodoItem: vi.fn(),
@@ -12,6 +13,7 @@ vi.mock('@/lib/db/todo-items', () => ({
 }));
 
 const mockDbFetchAllTodoItems = vi.mocked(dbFetchAllTodoItems);
+const mockDbFetchTodoItemById = vi.mocked(dbFetchTodoItemById);
 const mockDbCreateTodoItem = vi.mocked(dbCreateTodoItem);
 const mockDbDeleteTodoItem = vi.mocked(dbDeleteTodoItem);
 const mockDbCompleteTodoItem = vi.mocked(dbCompleteTodoItem);
@@ -37,6 +39,18 @@ describe('Server Actions', () => {
                 { id: '2', title: 'Test Todo 2', description: 'Description 2', deadline: null, completed: true },
             ]);
             expect(mockDbFetchAllTodoItems).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe('getTodoItemById', () => {
+        it('attempts fetching a todo item by ID', async () => {
+            const mockTodoItem = { id: '1', title: 'Test Todo', description: 'Test Description', deadline: null, completed: false };
+            mockDbFetchTodoItemById.mockResolvedValue(mockTodoItem);
+
+            const todoItem = await getTodoItemById('1');
+
+            expect(todoItem).toEqual(mockTodoItem);
+            expect(mockDbFetchTodoItemById).toHaveBeenCalledWith('1');
         });
     });
 
