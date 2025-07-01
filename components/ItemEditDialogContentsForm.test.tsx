@@ -1,6 +1,6 @@
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { cleanup, render } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import ItemEditDialogContentsForm from "./ItemEditDialogContentsForm";
 import { todo_item } from "@prisma/client";
 
@@ -18,7 +18,7 @@ describe("ItemEditDialogContentsForm", () => {
     };
 
     it('has correct form inputs', () => {
-        const { getByLabelText } = render(
+        render(
             <ItemEditDialogContentsForm
                 todoItem={testItem}
                 submitAction={() => { }}
@@ -26,13 +26,13 @@ describe("ItemEditDialogContentsForm", () => {
             />
         );
 
-        expect(getByLabelText("Title")).toBeInTheDocument();
-        expect(getByLabelText("Description")).toBeInTheDocument();
-        expect(getByLabelText("Deadline")).toBeInTheDocument();
+        expect(screen.getByLabelText("Title")).toBeInTheDocument();
+        expect(screen.getByLabelText("Description")).toBeInTheDocument();
+        expect(screen.getByLabelText("Deadline")).toBeInTheDocument();
     })
 
     it('has confirm button', () => {
-        const { getByRole } = render(
+        render(
             <ItemEditDialogContentsForm
                 todoItem={testItem}
                 submitAction={() => { }}
@@ -40,13 +40,13 @@ describe("ItemEditDialogContentsForm", () => {
             />
         );
 
-        expect(getByRole("button", { name: "Confirm" })).toBeInTheDocument();
+        expect(screen.getByRole("button", { name: "Confirm" })).toBeInTheDocument();
     });
 
     it('calls the mutate function when confirm button is clicked', async () => {
         const user = userEvent.setup();
         const mockMutate = vi.fn();
-        const { getByRole, getByLabelText } = render(
+        render(
             <ItemEditDialogContentsForm
                 todoItem={testItem}
                 submitAction={mockMutate}
@@ -54,10 +54,10 @@ describe("ItemEditDialogContentsForm", () => {
             />
         );
 
-        const titleInput = getByLabelText("Title");
-        const descriptionInput = getByLabelText("Description");
-        const deadlineInput = getByLabelText("Deadline");
-        const confirmButton = getByRole("button", { name: "Confirm" });
+        const titleInput = screen.getByLabelText("Title");
+        const descriptionInput = screen.getByLabelText("Description");
+        const deadlineInput = screen.getByLabelText("Deadline");
+        const confirmButton = screen.getByRole("button", { name: "Confirm" });
 
         await user.type(titleInput, "New Title");
         await user.type(descriptionInput, "New Description");
@@ -70,7 +70,7 @@ describe("ItemEditDialogContentsForm", () => {
     it('calls handleClose when cancel button is clicked', async () => {
         const user = userEvent.setup();
         const mockHandleClose = vi.fn();
-        const { getByRole } = render(
+        render(
             <ItemEditDialogContentsForm
                 todoItem={testItem}
                 submitAction={() => { }}
@@ -78,7 +78,7 @@ describe("ItemEditDialogContentsForm", () => {
             />
         );
 
-        const cancelButton = getByRole("button", { name: "Cancel" });
+        const cancelButton = screen.getByRole("button", { name: "Cancel" });
         await user.click(cancelButton);
 
         expect(mockHandleClose).toHaveBeenCalled();
@@ -91,7 +91,8 @@ describe("ItemEditDialogContentsForm", () => {
             onClose={() => { }}
         />);
 
-        const hiddenInput = document.querySelector('input[name="id"]') as HTMLInputElement;
+        // eslint-disable-next-line testing-library/no-node-access
+        const hiddenInput = document.querySelector('input[name="id"]') as HTMLInputElement; // I have no idea how to get this element using getByRole or getByLabelText
         expect(hiddenInput?.value).toBe("test-id");
     });
 });
