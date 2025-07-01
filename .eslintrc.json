@@ -4,5 +4,8 @@
     "next/typescript",
     "plugin:testing-library/react",
     "plugin:jest-dom/recommended"
-  ]
+  ],
+  "rules": {
+    "testing-library/no-manual-cleanup": "off" // Vitest requires manual cleanup
+  }
 }
