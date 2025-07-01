@@ -91,8 +91,7 @@ describe("ItemEditDialogContentsForm", () => {
             onClose={() => { }}
         />);
 
-        // eslint-disable-next-line testing-library/no-node-access
-        const hiddenInput = document.querySelector('input[name="id"]') as HTMLInputElement; // I have no idea how to get this element using getByRole or getByLabelText
+        const hiddenInput = screen.getByTestId("hidden-input-id") as HTMLInputElement;
         expect(hiddenInput?.value).toBe("test-id");
     });
 });

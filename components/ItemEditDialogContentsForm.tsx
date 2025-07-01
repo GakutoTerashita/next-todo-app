@@ -19,7 +19,7 @@ const ItemEditDialogContentsForm = (props: Props) => {
                     To edit this todo item, please enter the new details here.
                 </DialogContentText>
                 <form action={submitAction} id={`edit-form-${todoItem.id}`}>
-                    <input type="hidden" name="id" value={todoItem.id} />
+                    <input type="hidden" data-testid="hidden-input-id" name="id" value={todoItem.id} />
                     <TextField
                         autoFocus
                         margin="dense"
