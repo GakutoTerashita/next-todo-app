@@ -1,8 +1,8 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
-import { render, cleanup, waitFor } from "@testing-library/react";
+import { render, cleanup, screen } from "@testing-library/react";
 import Home from "./page";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { getTodoItems, registerTodoItem } from "./actions";
+import { getTodoItems } from "./actions";
 import { renderWithQueryClientProvider } from "@/test/utils";
 
 vi.mock('@/app/actions', async (importOriginal) => ({
@@ -11,7 +11,6 @@ vi.mock('@/app/actions', async (importOriginal) => ({
     registerTodoItem: vi.fn(),
 }));
 
-const MockRegisterTodoItem = vi.mocked(registerTodoItem); // Internally used by ItemRegistrationForm
 const MockGetTodoItems = vi.mocked(getTodoItems);
 
 describe('Root Page', () => {
@@ -31,12 +30,10 @@ describe('Root Page', () => {
 
         MockGetTodoItems.mockResolvedValueOnce(mockItems);
 
-        const result = renderWithQueryClientProvider(<Home />);
+        renderWithQueryClientProvider(<Home />);
 
-        await waitFor(async () => {
-            expect(await result.findByText('Item 1')).toBeInTheDocument();
-            expect(await result.findByText('Item 2')).toBeInTheDocument();
-        });
+        expect(await screen.findByText('Item 1')).toBeInTheDocument();
+        expect(await screen.findByText('Item 2')).toBeInTheDocument();
     });
 
     it('renders the item registration form', async () => {
@@ -48,17 +45,15 @@ describe('Root Page', () => {
         MockGetTodoItems.mockResolvedValueOnce(mockItems);
 
         const queryClient = new QueryClient();
-        const result = render(
+        render(
             <QueryClientProvider client={queryClient}>
                 <Home />
             </QueryClientProvider>
         );
 
-        await waitFor(() => {
-            expect(result.getByRole('textbox', { name: 'title' })).toBeInTheDocument();
-            expect(result.getByRole('textbox', { name: 'description' })).toBeInTheDocument();
-            expect(result.getByLabelText('deadline')).toBeInTheDocument();
-            expect(result.getByRole('button', { name: 'Add Item' })).toBeInTheDocument();
-        });
+        expect(await screen.findByRole('textbox', { name: 'title' })).toBeInTheDocument();
+        expect(await screen.findByRole('textbox', { name: 'description' })).toBeInTheDocument();
+        expect(await screen.findByLabelText('deadline')).toBeInTheDocument();
+        expect(await screen.findByRole('button', { name: 'Add Item' })).toBeInTheDocument();
     });
 });
