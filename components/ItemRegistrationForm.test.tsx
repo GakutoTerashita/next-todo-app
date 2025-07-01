@@ -1,4 +1,4 @@
-import { cleanup, render, waitFor } from "@testing-library/react";
+import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import ItemRegistrationForm from "./ItemRegistrationForm";
 import userEvent from "@testing-library/user-event";
@@ -39,44 +39,44 @@ describe('ItemRegistrationForm', () => {
     });
 
     it('renders 2 input fields with placeholders', () => {
-        const result = renderWithQueryClientProvider(<ItemRegistrationForm />);
+        renderWithQueryClientProvider(<ItemRegistrationForm />);
 
-        expect(result.getByRole('textbox', { name: 'title' })).toBeInTheDocument();
-        expect(result.getByRole('textbox', { name: 'description' })).toBeInTheDocument();
+        expect(screen.getByRole('textbox', { name: 'title' })).toBeInTheDocument();
+        expect(screen.getByRole('textbox', { name: 'description' })).toBeInTheDocument();
     });
 
     it('renders a date picker', () => {
-        const result = renderWithQueryClientProvider(<ItemRegistrationForm />);
+        renderWithQueryClientProvider(<ItemRegistrationForm />);
 
-        const datePicker = result.getByLabelText('deadline');
-        expect(datePicker.getAttribute('type')).toBe('date');
+        const datePicker = screen.getByLabelText('deadline');
+        expect(datePicker).toHaveAttribute('type', 'date');
     });
 
     it('user input is reflected in the input fields', async () => {
         const user = userEvent.setup();
-        const result = renderWithQueryClientProvider(<ItemRegistrationForm />);
+        renderWithQueryClientProvider(<ItemRegistrationForm />);
 
-        const titleInput = result.getByRole('textbox', { name: 'title' }) as HTMLInputElement;
-        const descriptionInput = result.getByRole('textbox', { name: 'description' }) as HTMLInputElement;
-        const datePicker = result.getByLabelText('deadline') as HTMLInputElement;
+        const titleInput = screen.getByRole('textbox', { name: 'title' }) as HTMLInputElement;
+        const descriptionInput = screen.getByRole('textbox', { name: 'description' }) as HTMLInputElement;
+        const datePicker = screen.getByLabelText('deadline') as HTMLInputElement;
 
         await user.type(titleInput, 'Test Item');
         await user.type(descriptionInput, 'This is a test item description.');
         await user.type(datePicker, '2023-10-01');
 
-        expect(titleInput.value).toBe('Test Item');
-        expect(descriptionInput.value).toBe('This is a test item description.');
-        expect(datePicker.value).toBe('2023-10-01');
+        expect(titleInput).toHaveValue('Test Item');
+        expect(descriptionInput).toHaveValue('This is a test item description.');
+        expect(datePicker).toHaveValue('2023-10-01');
     });
 
     it('performs registeration on form submission', async () => {
         const user = userEvent.setup();
-        const result = renderWithQueryClientProvider(<ItemRegistrationForm />);
+        renderWithQueryClientProvider(<ItemRegistrationForm />);
 
-        const titleInput = result.getByRole('textbox', { name: 'title' }) as HTMLInputElement;
-        const descriptionInput = result.getByRole('textbox', { name: 'description' }) as HTMLInputElement;
-        const datePicker = result.getByLabelText('deadline') as HTMLInputElement;
-        const submitButton = result.getByRole('button', { name: 'Add Item' });
+        const titleInput = screen.getByRole('textbox', { name: 'title' }) as HTMLInputElement;
+        const descriptionInput = screen.getByRole('textbox', { name: 'description' }) as HTMLInputElement;
+        const datePicker = screen.getByLabelText('deadline') as HTMLInputElement;
+        const submitButton = screen.getByRole('button', { name: 'Add Item' });
 
         mockRegisterTodoItem.mockResolvedValue(undefined);
 
@@ -90,12 +90,12 @@ describe('ItemRegistrationForm', () => {
 
     it('clears input fields after successful registration', async () => {
         const user = userEvent.setup();
-        const result = renderWithQueryClientProvider(<ItemRegistrationForm />);
+        renderWithQueryClientProvider(<ItemRegistrationForm />);
 
-        const titleInput = result.getByRole('textbox', { name: 'title' }) as HTMLInputElement;
-        const descriptionInput = result.getByRole('textbox', { name: 'description' }) as HTMLInputElement;
-        const datePicker = result.getByLabelText('deadline') as HTMLInputElement;
-        const submitButton = result.getByRole('button', { name: 'Add Item' });
+        const titleInput = screen.getByRole('textbox', { name: 'title' }) as HTMLInputElement;
+        const descriptionInput = screen.getByRole('textbox', { name: 'description' }) as HTMLInputElement;
+        const datePicker = screen.getByLabelText('deadline') as HTMLInputElement;
+        const submitButton = screen.getByRole('button', { name: 'Add Item' });
 
         mockRegisterTodoItem.mockResolvedValue(undefined);
 
@@ -104,9 +104,9 @@ describe('ItemRegistrationForm', () => {
         await user.type(datePicker, '2023-10-01');
         await user.click(submitButton);
 
-        expect(titleInput.value).toBe('');
-        expect(descriptionInput.value).toBe('');
-        expect(datePicker.value).toBe('');
+        expect(titleInput).toHaveValue('');
+        expect(descriptionInput).toHaveValue('');
+        expect(datePicker).toHaveValue('');
     });
 
     it('invalidates queries on successful registration', async () => {
@@ -123,16 +123,16 @@ describe('ItemRegistrationForm', () => {
         mockUseQueryClient.mockReturnValue(queryClient);
         mockRegisterTodoItem.mockResolvedValue(undefined);
 
-        const result = render(
+        render(
             <QueryClientProvider client={queryClient}>
                 <ItemRegistrationForm />
             </QueryClientProvider>
         );
 
-        const titleInput = result.getByRole('textbox', { name: 'title' }) as HTMLInputElement;
-        const descriptionInput = result.getByRole('textbox', { name: 'description' }) as HTMLInputElement;
-        const datePicker = result.getByLabelText('deadline') as HTMLInputElement;
-        const submitButton = result.getByRole('button', { name: 'Add Item' });
+        const titleInput = screen.getByRole('textbox', { name: 'title' }) as HTMLInputElement;
+        const descriptionInput = screen.getByRole('textbox', { name: 'description' }) as HTMLInputElement;
+        const datePicker = screen.getByLabelText('deadline') as HTMLInputElement;
+        const submitButton = screen.getByRole('button', { name: 'Add Item' });
 
         await user.type(titleInput, 'Test Item');
         await user.type(descriptionInput, 'This is a test item description.');
@@ -146,12 +146,12 @@ describe('ItemRegistrationForm', () => {
 
     it('button is disabled while mutation is in progress', async () => {
         const user = userEvent.setup();
-        const result = renderWithQueryClientProvider(<ItemRegistrationForm />);
+        renderWithQueryClientProvider(<ItemRegistrationForm />);
 
-        const titleInput = result.getByRole('textbox', { name: 'title' }) as HTMLInputElement;
-        const descriptionInput = result.getByRole('textbox', { name: 'description' }) as HTMLInputElement;
-        const datePicker = result.getByLabelText('deadline') as HTMLInputElement;
-        const submitButton = result.getByRole('button', { name: 'Add Item' });
+        const titleInput = screen.getByRole('textbox', { name: 'title' }) as HTMLInputElement;
+        const descriptionInput = screen.getByRole('textbox', { name: 'description' }) as HTMLInputElement;
+        const datePicker = screen.getByLabelText('deadline') as HTMLInputElement;
+        const submitButton = screen.getByRole('button', { name: 'Add Item' });
 
         mockRegisterTodoItem.mockImplementation(() => new Promise(() => { })); // Simulate a pending mutation
 
