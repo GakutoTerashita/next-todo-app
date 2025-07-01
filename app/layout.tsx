@@ -20,8 +20,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <CssBaseline />
         <Providers>
+          <CssBaseline />
           {children}
         </Providers>
       </body>
