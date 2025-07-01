@@ -1,8 +1,6 @@
 import { Divider, List } from "@mui/material";
 import React from "react";
 import TodoListItem from "./TodoListItem";
-import { useQuery } from "@tanstack/react-query";
-import { getTodoItems } from "@/app/actions";
 import { todo_item } from "@prisma/client";
 
 interface Props {
