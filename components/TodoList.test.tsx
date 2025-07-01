@@ -2,15 +2,7 @@ import { cleanup, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import TodoList from "./TodoList";
 import { todo_item } from "@prisma/client";
-import { getTodoItems } from "@/app/actions";
 import { renderWithQueryClientProvider } from "@/test/utils";
-
-vi.mock('@/app/actions', async (importOriginal) => ({
-    ...await importOriginal<typeof import('@/app/actions')>(),
-    getTodoItems: vi.fn(),
-}));
-
-const MockGetTodoItems = vi.mocked(getTodoItems);
 
 describe('TodoList', () => {
     afterEach(() => {
@@ -34,9 +26,8 @@ describe('TodoList', () => {
                 completed: false,
             }
         ]
-        MockGetTodoItems.mockResolvedValueOnce(items);
 
-        const result = renderWithQueryClientProvider(<TodoList />);
+        const result = renderWithQueryClientProvider(<TodoList todoItems={items} />);
 
         await waitFor(() => {
             const todoItems = result.getAllByRole('listitem');
@@ -61,9 +52,8 @@ describe('TodoList', () => {
                 completed: false,
             }
         ];
-        MockGetTodoItems.mockResolvedValueOnce(items);
 
-        const result = renderWithQueryClientProvider(<TodoList />);
+        const result = renderWithQueryClientProvider(<TodoList todoItems={items} />);
 
         await waitFor(() => {
             const dividers = result.getAllByRole('separator');
@@ -73,9 +63,8 @@ describe('TodoList', () => {
 
     it('should handle empty todo list gracefully', async () => {
         const items: todo_item[] = [];
-        MockGetTodoItems.mockResolvedValueOnce(items);
 
-        const result = renderWithQueryClientProvider(<TodoList />);
+        const result = renderWithQueryClientProvider(<TodoList todoItems={items} />);
 
         await waitFor(() => {
             expect(result.queryByText(/Loading/i)).toBeNull();
