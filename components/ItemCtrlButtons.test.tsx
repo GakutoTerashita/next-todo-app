@@ -1,7 +1,7 @@
-import { cleanup, render, waitFor } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, it, vi, expect } from "vitest";
 import ItemCtrlButtons from "./ItemCtrlButtons";
-import { completeTodoItem, deleteTodoItem, uncompleteTodoItem, updateTodoItem } from "@/app/actions";
+import { completeTodoItem, deleteTodoItem, uncompleteTodoItem } from "@/app/actions";
 import { QueryClient, QueryClientProvider, useQueryClient } from "@tanstack/react-query";
 import userEvent from "@testing-library/user-event";
 import { renderWithQueryClientProvider } from "@/test/utils";
@@ -22,7 +22,6 @@ vi.mock('@tanstack/react-query', async (importOriginal) => ({
 const mockDeleteTodoItem = vi.mocked(deleteTodoItem);
 const mockCompleteTodoItem = vi.mocked(completeTodoItem);
 const mockUncompleteTodoItem = vi.mocked(uncompleteTodoItem);
-const mockUpdateTodoItem = vi.mocked(updateTodoItem);
 
 const mockUseQueryClient = vi.mocked(useQueryClient);
 
@@ -37,16 +36,16 @@ describe('ItemCtrlButtons', () => {
     });
 
     it('renders buttons with correct labels', () => {
-        const { getByRole } = renderWithQueryClientProvider(<ItemCtrlButtons completed={false} id="1" />);
+        renderWithQueryClientProvider(<ItemCtrlButtons completed={false} id="1" />);
 
-        expect(getByRole('button', { name: 'Complete' }));
-        expect(getByRole('button', { name: 'Edit' }));
-        expect(getByRole('button', { name: 'Delete' }));
+        expect(screen.getByRole('button', { name: 'Complete' })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Edit' })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Delete' })).toBeInTheDocument();
 
         cleanup();
 
-        const { getByRole: getByRoleCompleted } = renderWithQueryClientProvider(<ItemCtrlButtons completed={true} id="2" />);
-        expect(getByRoleCompleted('button', { name: 'Completed' }));
+        renderWithQueryClientProvider(<ItemCtrlButtons completed={true} id="2" />);
+        expect(screen.getByRole('button', { name: 'Completed' })).toBeInTheDocument();
     });
 
     describe('delete button', () => {
@@ -54,9 +53,9 @@ describe('ItemCtrlButtons', () => {
             it('attempts to delete item on click', async () => {
                 const user = userEvent.setup();
 
-                const result = renderWithQueryClientProvider(<ItemCtrlButtons completed={false} id="1" />);
+                renderWithQueryClientProvider(<ItemCtrlButtons completed={false} id="1" />);
 
-                const deleteButton = result.getByRole('button', { name: 'Delete' });
+                const deleteButton = screen.getByRole('button', { name: 'Delete' });
                 await user.click(deleteButton);
 
                 expect(mockDeleteTodoItem).toHaveBeenCalled();
@@ -78,13 +77,13 @@ describe('ItemCtrlButtons', () => {
 
                 const invalidateQueriesSpy = vi.spyOn(queryClient, 'invalidateQueries');
 
-                const result = render(
+                render(
                     <QueryClientProvider client={queryClient}>
                         <ItemCtrlButtons completed={false} id="1" />
                     </QueryClientProvider>
                 );
 
-                const deleteButton = result.getByText('Delete');
+                const deleteButton = screen.getByRole('button', { name: 'Delete' });
                 await user.click(deleteButton);
 
                 expect(invalidateQueriesSpy).toHaveBeenCalledWith({ queryKey: ['todoItems'] });
@@ -108,13 +107,13 @@ describe('ItemCtrlButtons', () => {
 
                 const invalidateQueriesSpy = vi.spyOn(queryClient, 'invalidateQueries');
 
-                const result = render(
+                render(
                     <QueryClientProvider client={queryClient}>
                         <ItemCtrlButtons completed={false} id="1" />
                     </QueryClientProvider>
                 );
 
-                const deleteButton = result.getByText('Delete');
+                const deleteButton = screen.getByRole('button', { name: 'Delete' });
                 await user.click(deleteButton);
 
                 expect(mockDeleteTodoItem).toHaveBeenCalled();
@@ -131,9 +130,9 @@ describe('ItemCtrlButtons', () => {
 
                     const user = userEvent.setup();
 
-                    const result = renderWithQueryClientProvider(<ItemCtrlButtons completed={false} id="1" />);
+                    renderWithQueryClientProvider(<ItemCtrlButtons completed={false} id="1" />);
 
-                    const completeButton = result.getByRole('button', { name: 'Complete' });
+                    const completeButton = screen.getByRole('button', { name: 'Complete' });
                     await user.click(completeButton);
 
                     expect(mockCompleteTodoItem).toHaveBeenCalled();
@@ -155,13 +154,13 @@ describe('ItemCtrlButtons', () => {
 
                     const invalidateQueriesSpy = vi.spyOn(queryClient, 'invalidateQueries');
 
-                    const result = render(
+                    render(
                         <QueryClientProvider client={queryClient}>
                             <ItemCtrlButtons completed={false} id="1" />
                         </QueryClientProvider>
                     );
 
-                    const completeButton = result.getByRole('button', { name: 'Complete' });
+                    const completeButton = screen.getByRole('button', { name: 'Complete' });
                     await user.click(completeButton);
 
                     expect(invalidateQueriesSpy).toHaveBeenCalledWith({ queryKey: ['todoItems'] });
@@ -185,13 +184,13 @@ describe('ItemCtrlButtons', () => {
 
                     const invalidateQueriesSpy = vi.spyOn(queryClient, 'invalidateQueries');
 
-                    const result = render(
+                    render(
                         <QueryClientProvider client={queryClient}>
                             <ItemCtrlButtons completed={false} id="1" />
                         </QueryClientProvider>
                     );
 
-                    const completeButton = result.getByRole('button', { name: 'Complete' });
+                    const completeButton = screen.getByRole('button', { name: 'Complete' });
                     await user.click(completeButton);
 
                     expect(mockCompleteTodoItem).toHaveBeenCalled();
@@ -207,9 +206,9 @@ describe('ItemCtrlButtons', () => {
 
                     const user = userEvent.setup();
 
-                    const result = renderWithQueryClientProvider(<ItemCtrlButtons completed={true} id="1" />);
+                    renderWithQueryClientProvider(<ItemCtrlButtons completed={true} id="1" />);
 
-                    const completeButton = result.getByRole('button', { name: 'Completed' });
+                    const completeButton = screen.getByRole('button', { name: 'Completed' });
                     await user.click(completeButton);
 
                     expect(mockUncompleteTodoItem).toHaveBeenCalled();
@@ -231,13 +230,13 @@ describe('ItemCtrlButtons', () => {
 
                     const invalidateQueriesSpy = vi.spyOn(queryClient, 'invalidateQueries');
 
-                    const result = render(
+                    render(
                         <QueryClientProvider client={queryClient}>
                             <ItemCtrlButtons completed={true} id="1" />
                         </QueryClientProvider>
                     );
 
-                    const completeButton = result.getByRole('button', { name: 'Completed' });
+                    const completeButton = screen.getByRole('button', { name: 'Completed' });
                     await user.click(completeButton);
 
                     expect(invalidateQueriesSpy).toHaveBeenCalledWith({ queryKey: ['todoItems'] });
@@ -261,13 +260,13 @@ describe('ItemCtrlButtons', () => {
 
                     const invalidateQueriesSpy = vi.spyOn(queryClient, 'invalidateQueries');
 
-                    const result = render(
+                    render(
                         <QueryClientProvider client={queryClient}>
                             <ItemCtrlButtons completed={true} id="1" />
                         </QueryClientProvider>
                     );
 
-                    const completeButton = result.getByRole('button', { name: 'Completed' });
+                    const completeButton = screen.getByRole('button', { name: 'Completed' });
                     await user.click(completeButton);
 
                     expect(mockUncompleteTodoItem).toHaveBeenCalled();
@@ -281,12 +280,12 @@ describe('ItemCtrlButtons', () => {
         it('opens dialog for editing todo-item on click', async () => {
             const user = userEvent.setup();
 
-            const result = renderWithQueryClientProvider(<ItemCtrlButtons completed={false} id="1" />);
+            renderWithQueryClientProvider(<ItemCtrlButtons completed={false} id="1" />);
 
-            const editButton = result.getByRole('button', { name: 'Edit' });
+            const editButton = screen.getByRole('button', { name: 'Edit' });
             await user.click(editButton);
 
-            expect(result.getByText('Edit TodoItem')).toBeInTheDocument();
+            expect(screen.getByText('Edit TodoItem')).toBeInTheDocument();
         });
     });
 });
