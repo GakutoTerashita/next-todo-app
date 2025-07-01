@@ -1,5 +1,5 @@
 import { todo_item } from "@prisma/client";
-import { cleanup, render } from "@testing-library/react";
+import { cleanup, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import TodoListItem from "./TodoListItem";
 import { renderWithQueryClientProvider } from "@/test/utils";
@@ -17,9 +17,9 @@ describe('TodoListItem', () => {
             deadline: new Date("2023-10-01T00:00:00Z"),
             completed: false
         }
-        const result = renderWithQueryClientProvider(<TodoListItem item={item} />);
+        renderWithQueryClientProvider(<TodoListItem item={item} />);
 
-        expect(result.getByText("Test Item")).toBeInTheDocument();
+        expect(screen.getByText("Test Item")).toBeInTheDocument();
     });
 
     it('renders description of item', () => {
@@ -30,9 +30,9 @@ describe('TodoListItem', () => {
             deadline: new Date("2023-10-02T00:00:00Z"),
             completed: false
         }
-        const result = renderWithQueryClientProvider(<TodoListItem item={item} />);
+        renderWithQueryClientProvider(<TodoListItem item={item} />);
 
-        expect(result.getByText("This is another test item.")).toBeInTheDocument();
+        expect(screen.getByText("This is another test item.")).toBeInTheDocument();
     });
 
     it('renders deadline of item', () => {
@@ -43,9 +43,9 @@ describe('TodoListItem', () => {
             deadline: new Date("2023-10-03T00:00:00Z"),
             completed: false
         }
-        const result = renderWithQueryClientProvider(<TodoListItem item={item} />);
+        renderWithQueryClientProvider(<TodoListItem item={item} />);
 
-        expect(result.getByText("Deadline: 2023/10/03")).toBeInTheDocument();
+        expect(screen.getByText("Deadline: 2023/10/03")).toBeInTheDocument();
     });
 
     it('does not render deadline if it does not exist', () => {
@@ -56,9 +56,9 @@ describe('TodoListItem', () => {
             deadline: null,
             completed: false
         }
-        const result = renderWithQueryClientProvider(<TodoListItem item={item} />);
+        renderWithQueryClientProvider(<TodoListItem item={item} />);
 
-        expect(result.queryByText("Deadline:")).toBeNull();
+        expect(screen.queryByText("Deadline:")).not.toBeInTheDocument();
     });
 
     it('renders item control buttons (complete, edit, delete)', () => {
@@ -69,10 +69,10 @@ describe('TodoListItem', () => {
             deadline: new Date("2023-10-04T00:00:00Z"),
             completed: false
         }
-        const result = renderWithQueryClientProvider(<TodoListItem item={item} />);
+        renderWithQueryClientProvider(<TodoListItem item={item} />);
 
-        expect(result.getByRole('button', { name: /complete/i })).toBeInTheDocument();
-        expect(result.getByRole('button', { name: /edit/i })).toBeInTheDocument();
-        expect(result.getByRole('button', { name: /delete/i })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /complete/i })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /edit/i })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /delete/i })).toBeInTheDocument();
     })
 });
