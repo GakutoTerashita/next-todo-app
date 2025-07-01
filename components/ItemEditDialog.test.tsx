@@ -1,4 +1,4 @@
-import { cleanup, render, waitFor } from "@testing-library/react";
+import { cleanup, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import ItemEditDialog from "./ItemEditDialog";
 import { renderWithQueryClientProvider } from "@/test/utils";
@@ -30,7 +30,7 @@ describe("ItemEditDialog", () => {
         });
 
         const mutate = vi.fn();
-        const { getByText, getByLabelText } = renderWithQueryClientProvider(
+        renderWithQueryClientProvider(
             <ItemEditDialog
                 itemId="test-id"
                 mutate={mutate}
@@ -39,12 +39,10 @@ describe("ItemEditDialog", () => {
             />
         );
 
-        await waitFor(() => {
-            expect(getByText("Edit TodoItem")).toBeInTheDocument();
-            expect(getByLabelText("Title")).toHaveValue("Test Item");
-            expect(getByLabelText("Description")).toHaveValue("This is a test item.");
-            expect(getByLabelText("Deadline")).toHaveValue("2024-12-31");
-        });
+        expect(await screen.findByText("Edit TodoItem")).toBeInTheDocument();
+        expect(await screen.findByLabelText("Title")).toHaveValue("Test Item");
+        expect(await screen.findByLabelText("Description")).toHaveValue("This is a test item.");
+        expect(await screen.findByLabelText("Deadline")).toHaveValue("2024-12-31");
     });
 
     it('mutate function is called when confirm button in the dialog is clicked', async () => {
@@ -59,7 +57,7 @@ describe("ItemEditDialog", () => {
 
         const mutate = vi.fn().mockResolvedValue(true);
 
-        const { getByRole, getByText } = renderWithQueryClientProvider(
+        renderWithQueryClientProvider(
             <ItemEditDialog
                 itemId="test-id"
                 mutate={mutate}
@@ -68,12 +66,10 @@ describe("ItemEditDialog", () => {
             />
         );
 
-        await waitFor(() => {
-            expect(getByText("Edit TodoItem")).toBeInTheDocument();
-        });
+        expect(await screen.findByText("Edit TodoItem")).toBeInTheDocument();
 
         // Simulate form submission
-        const submitButton = getByRole("button", { name: /confirm/i });
+        const submitButton = screen.getByRole("button", { name: /confirm/i });
         await user.click(submitButton);
 
         await waitFor(() => {
