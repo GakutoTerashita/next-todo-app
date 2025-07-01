@@ -11,11 +11,23 @@ const Home = () => {
   const query = useQuery({ queryKey: ['todoItems'], queryFn: getTodoItems });
 
   return (
-    <React.Fragment>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
       <HeaderBar />
-      <Container maxWidth="lg">
-        <Paper elevation={3} sx={{ padding: 1, marginTop: 2, marginBottom: 2 }}>
-          <div style={{ overflowY: 'auto', maxHeight: 'calc(100vh - 250px)' }}>
+      <Container maxWidth="lg" sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        flexGrow: 1,
+        paddingY: 2
+      }}>
+        <Paper elevation={3} sx={{
+          padding: 1,
+          flexGrow: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden',
+          maxHeight: 'calc(100vh - 212px)' // Adjust based on header and form below
+        }}>
+          <div style={{ overflowY: 'auto', flexGrow: 1 }}>
             {query.isLoading && (
               <List>
                 <h3>Loading items...</h3>
@@ -33,11 +45,11 @@ const Home = () => {
             )}
           </div>
         </Paper>
-        <Paper elevation={3} sx={{ padding: 2 }}>
+        <Paper elevation={3} sx={{ padding: 2, marginTop: 2 }}>
           <ItemRegistrationForm />
         </Paper>
       </Container>
-    </React.Fragment>
+    </div>
   );
 }
 
