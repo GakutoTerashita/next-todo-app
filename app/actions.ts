@@ -80,9 +80,8 @@ export const uncompleteTodoItem = async (formData: FormData) => {
     return;
 };
 
-export const updateTodoItem = async (formData: FormData) => {
+export const updateTodoItem = async (itemId: string, formData: FormData) => {
     const schema = z.object({
-        id: z.string().min(1, "ID is required"),
         title: z.string().min(1, "Title is required"),
         description: z.string().optional().nullable(),
         deadline: z.string().optional().nullable(),
@@ -93,8 +92,8 @@ export const updateTodoItem = async (formData: FormData) => {
         throw new Error("Invalid form data");
     }
 
-    const { id, title, description, deadline } = parsedData.data;
-    await dbUpdateTodoItem(id, {
+    const { title, description, deadline } = parsedData.data;
+    await dbUpdateTodoItem(itemId, {
         title,
         description: description || '',
         deadline: deadline ? new Date(deadline) : null,

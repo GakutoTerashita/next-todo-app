@@ -112,7 +112,7 @@ describe('Server Actions', () => {
             formData.append('description', 'Updated description');
             formData.append('deadline', '2024-01-01');
 
-            await updateTodoItem(formData);
+            await updateTodoItem('1', formData);
 
             expect(mockDbUpdateTodoItem).toHaveBeenCalledWith('1', {
                 title: 'Updated Todo Item',

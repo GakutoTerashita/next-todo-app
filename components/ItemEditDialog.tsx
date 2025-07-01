@@ -5,17 +5,19 @@ import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 import ItemEditDialogContentsForm from './ItemEditDialogContentsForm';
 
+interface Props {
+    itemId: string;
+    mutate: (formData: FormData) => void;
+    open: boolean;
+    onClose: () => void;
+};
+
 const ItemEditDialog = ({
     itemId,
     mutate,
     open,
     onClose,
-}: {
-    itemId: string;
-    mutate: (formData: FormData) => void;
-    open: boolean;
-    onClose: () => void;
-}) => {
+}: Props) => {
     const { data, isPending, isError, error } = useQuery({
         queryKey: ['unique-todo-item', itemId],
         queryFn: () => getTodoItemById(itemId),

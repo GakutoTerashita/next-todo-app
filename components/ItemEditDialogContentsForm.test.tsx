@@ -83,15 +83,4 @@ describe("ItemEditDialogContentsForm", () => {
 
         expect(mockHandleClose).toHaveBeenCalled();
     });
-
-    it('hidden input has correct itemId', () => {
-        render(<ItemEditDialogContentsForm
-            todoItem={testItem}
-            submitAction={() => { }}
-            onClose={() => { }}
-        />);
-
-        const hiddenInput = screen.getByTestId("hidden-input-id") as HTMLInputElement;
-        expect(hiddenInput?.value).toBe("test-id");
-    });
 });
