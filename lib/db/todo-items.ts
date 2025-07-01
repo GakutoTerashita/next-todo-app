@@ -1,9 +1,28 @@
 import { prisma } from "@/lib/prisma";
-import { todo_item } from "@prisma/client";
+import { Prisma, todo_item } from "@prisma/client";
+
+const dbFetchTodoItems = async (options?: Prisma.todo_itemFindManyArgs): Promise<todo_item[]> => {
+    const todoItems = await prisma.todo_item.findMany(options);
+    return todoItems;
+};
 
 export const dbFetchAllTodoItems = async (): Promise<todo_item[]> => {
-    const todoItems = await prisma.todo_item.findMany();
-    return todoItems;
+    const result = dbFetchTodoItems();
+    return result;
+};
+
+export const dbFetchAllTodoItemsCompleted = async (): Promise<todo_item[]> => {
+    const result = dbFetchTodoItems({
+        where: { completed: true },
+    });
+    return result;
+};
+
+export const dbFetchAllTodoItemsUncompleted = async (): Promise<todo_item[]> => {
+    const result = dbFetchTodoItems({
+        where: { completed: false },
+    });
+    return result;
 };
 
 export const dbFetchTodoItemById = async (id: string): Promise<todo_item | null> => {

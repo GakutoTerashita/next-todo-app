@@ -1,6 +1,6 @@
 import { describe, expect, vi, beforeEach, it } from "vitest";
 import { prisma } from "@/lib/prisma";
-import { dbCreateTodoItem, dbDeleteTodoItem, dbFetchAllTodoItems, dbCompleteTodoItem, dbUncompleteTodoItem, dbFetchTodoItemById, dbUpdateTodoItem } from "./todo-items";
+import { dbCreateTodoItem, dbDeleteTodoItem, dbFetchAllTodoItems, dbCompleteTodoItem, dbUncompleteTodoItem, dbFetchTodoItemById, dbUpdateTodoItem, dbFetchAllTodoItemsCompleted } from "./todo-items";
 
 vi.mock('@/lib/prisma', () => ({
     prisma: {
@@ -27,7 +27,7 @@ describe('dbFetchAllTodoItems', () => {
             mockFindMany.mockReset();
         });
 
-        it('fetches all todo items from the database', async () => {
+        it('returns fetched items', async () => {
             const mockTodoItems = [
                 {
                     id: '1',
@@ -68,6 +68,35 @@ describe('dbFetchAllTodoItems', () => {
     });
 });
 
+describe('dbFetchTodoItemsCompleted', () => {
+    describe('success case', () => {
+        it('returns fetched items', async () => {
+            const mockTodoItems = [
+                {
+                    id: '1',
+                    title: 'Test Todo 1',
+                    description: 'Description 1',
+                    deadline: null,
+                    completed: true,
+                },
+                {
+                    id: '2',
+                    title: 'Test Todo 2',
+                    description: 'Description 2',
+                    deadline: null,
+                    completed: true,
+                }
+            ];
+            const shouldBe = mockTodoItems.filter(item => item.completed);
+            mockFindMany.mockResolvedValue(mockTodoItems);
+
+            const todoItems = await dbFetchAllTodoItemsCompleted();
+
+            expect(todoItems).toEqual(shouldBe);
+        });
+    });
+});
+
 describe('dbFetchTodoItemById', () => {
     describe('success case', () => {
         beforeEach(() => {
@@ -75,7 +104,7 @@ describe('dbFetchTodoItemById', () => {
             mockFindUnique.mockReset();
         });
 
-        it('fetches a todo item by ID from the database', async () => {
+        it('returns fetched items, calls where id', async () => {
             const mockTodoItem = {
                 id: '1',
                 title: 'Test Todo',
