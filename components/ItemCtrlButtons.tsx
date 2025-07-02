@@ -1,4 +1,4 @@
-import { completeTodoItem, deleteTodoItem, uncompleteTodoItem, updateTodoItem } from "@/app/actions";
+import { completeTodoItem, deleteTodoItem, uncompleteTodoItem, updateTodoItem } from "@/app/actions/todo";
 import useItemEditDialog from "@/hooks/useItemEditDialog";
 import useTodoMutation from "@/hooks/useTodoMutation";
 import { Button } from "@mui/material";

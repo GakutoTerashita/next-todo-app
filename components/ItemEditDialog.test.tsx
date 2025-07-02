@@ -2,10 +2,10 @@ import { cleanup, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import ItemEditDialog from "./ItemEditDialog";
 import { renderWithQueryClientProvider } from "@/test/utils";
-import { getTodoItemById } from "@/app/actions";
+import { getTodoItemById } from "@/app/actions/todo";
 import userEvent from "@testing-library/user-event";
 
-vi.mock("@/app/actions", () => ({
+vi.mock("@/app/actions/todo", () => ({
     getTodoItemById: vi.fn(),
 }));
 

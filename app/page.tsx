@@ -4,7 +4,7 @@ import TodoList from "@/components/TodoList";
 import { Container, List, Paper, styled } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
-import { getTodoItems } from "./actions";
+import { getTodoItems } from "./actions/todo";
 import HeaderBar from "@/components/HeaderBar";
 
 const MyDiv = styled('div')({

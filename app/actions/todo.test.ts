@@ -1,6 +1,6 @@
 import { dbFetchAllTodoItems, dbCreateTodoItem, dbDeleteTodoItem, dbCompleteTodoItem, dbUncompleteTodoItem, dbUpdateTodoItem, dbFetchTodoItemById } from "@/lib/db/todo-items";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { completeTodoItem, deleteTodoItem, getTodoItemById, getTodoItems, registerTodoItem, uncompleteTodoItem, updateTodoItem } from "./actions";
+import { completeTodoItem, deleteTodoItem, getTodoItemById, getTodoItems, registerTodoItem, uncompleteTodoItem, updateTodoItem } from "./todo";
 
 vi.mock('@/lib/db/todo-items', () => ({
     dbFetchAllTodoItems: vi.fn(),

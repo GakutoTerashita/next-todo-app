@@ -1,13 +1,13 @@
 import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, it, vi, expect } from "vitest";
 import ItemCtrlButtons from "./ItemCtrlButtons";
-import { completeTodoItem, deleteTodoItem, uncompleteTodoItem } from "@/app/actions";
+import { completeTodoItem, deleteTodoItem, uncompleteTodoItem } from "@/app/actions/todo";
 import { QueryClient, QueryClientProvider, useQueryClient } from "@tanstack/react-query";
 import userEvent from "@testing-library/user-event";
 import { renderWithQueryClientProvider } from "@/test/utils";
 
-vi.mock('@/app/actions', async (importOriginal) => ({
-    ...await importOriginal<typeof import('@/app/actions')>(),
+vi.mock('@/app/actions/todo', async (importOriginal) => ({
+    ...await importOriginal<typeof import('@/app/actions/todo')>(),
     deleteTodoItem: vi.fn(),
     completeTodoItem: vi.fn(),
     uncompleteTodoItem: vi.fn(),

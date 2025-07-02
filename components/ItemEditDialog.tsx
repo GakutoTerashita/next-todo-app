@@ -1,5 +1,5 @@
 "use client";
-import { getTodoItemById } from '@/app/actions';
+import { getTodoItemById } from '@/app/actions/todo';
 import { Dialog, DialogTitle } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import React from 'react';

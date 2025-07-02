@@ -2,11 +2,11 @@ import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import ItemRegistrationForm from "./ItemRegistrationForm";
 import userEvent from "@testing-library/user-event";
-import { registerTodoItem } from "@/app/actions";
+import { registerTodoItem } from "@/app/actions/todo";
 import { renderWithQueryClientProvider } from "@/test/utils";
 import { QueryClient, QueryClientProvider, useQueryClient } from "@tanstack/react-query";
 
-vi.mock('@/app/actions', () => ({
+vi.mock('@/app/actions/todo', () => ({
     registerTodoItem: vi.fn()
 }));
 
