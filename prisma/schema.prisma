@@ -14,3 +14,9 @@ model todo_item {
     deadline    DateTime?
     completed   Boolean   @default(false)
 }
+
+model user {
+    name           String
+    email          String @unique
+    hashedPassword String
+}
