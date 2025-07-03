@@ -6,7 +6,7 @@ import { redirect } from 'next/navigation';
 import fetchUserByEmail from './fetchUserByEmail';
 import validatePassword from './validatePassword';
 
-type FormState = {
+type SingupFormState = {
     errors?: {
         name?: string[];
         email?: string[];
@@ -16,9 +16,9 @@ type FormState = {
 } | undefined;
 
 export const signup = async (
-    state: FormState,
+    state: SingupFormState,
     formData: FormData
-): Promise<FormState> => {
+): Promise<SingupFormState> => {
     const validatedData = validateSignupFormData(formData);
 
     if ('errors' in validatedData) {
@@ -37,7 +37,17 @@ export const signup = async (
     redirect("/");
 };
 
-export const login = async (formData: FormData) => {
+type LoginFormState = {
+    errors?: {
+        email?: string[];
+        password?: string[];
+    }
+} | undefined;
+
+export const login = async (
+    state: LoginFormState,
+    formData: FormData,
+) => {
     const validatedData = validateSigninFormData(formData);
 
     if ('errors' in validatedData) {

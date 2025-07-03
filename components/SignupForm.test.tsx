@@ -3,7 +3,7 @@ import { describe, expect, it, afterEach, vi } from "vitest";
 import SignupForm from "./SignupForm";
 
 vi.mock('@/app/actions/auth/auth', () => ({
-    signup: vi.fn(() => Promise.resolve(undefined)), // Mock the signup function
+    signup: vi.fn(() => Promise.resolve(undefined)),
 }));
 
 describe('Authentication form', () => {
@@ -11,7 +11,7 @@ describe('Authentication form', () => {
         cleanup();
     });
 
-    it('renders label for name, email, and password', () => {
+    it('renders textbox for name, email, and password', () => {
         render(<SignupForm />);
 
         expect(screen.getByRole('textbox', { name: /name/i })).toBeInTheDocument();

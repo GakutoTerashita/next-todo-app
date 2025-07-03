@@ -1,24 +1,11 @@
-"use client";
-import { signup } from "@/app/actions/auth/auth";
+import { login } from "@/app/actions/auth/auth";
 import { Button, TextField } from "@mui/material";
 import { useActionState } from "react";
 
-const SignupForm = () => {
-    const [state, action, pending] = useActionState(signup, undefined);
-
+const LoginForm = () => {
+    const [state, action, pending] = useActionState(login, undefined);
     return (
         <form action={action}>
-            <div>
-                <TextField
-                    type="text"
-                    name="name"
-                    label="Name"
-                    defaultValue=""
-                    placeholder="Enter your name"
-                    required
-                />
-                {state?.errors?.name && <p>{state.errors.name}</p>}
-            </div>
             <div>
                 <TextField
                     type="email"
@@ -39,16 +26,7 @@ const SignupForm = () => {
                     placeholder="Enter your password"
                     required
                 />
-                {state?.errors?.password && (
-                    <div>
-                        <p>Password must:</p>
-                        <ul>
-                            {state.errors.password.map((error) => (
-                                <li key={error}>- {error}</li>
-                            ))}
-                        </ul>
-                    </div>
-                )}
+                {state?.errors?.password && <p>{state.errors.password}</p>}
             </div>
             <Button
                 type="submit"
@@ -57,10 +35,10 @@ const SignupForm = () => {
                 disabled={pending}
                 loading={pending}
             >
-                Sign Up
+                Log In
             </Button>
         </form>
-    )
+    );
 };
 
-export default SignupForm;
+export default LoginForm;
