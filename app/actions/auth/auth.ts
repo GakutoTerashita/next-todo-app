@@ -1,3 +1,4 @@
+"use server";
 import registerUser from './registerUser';
 import validateFormData from './validateFormData';
 
