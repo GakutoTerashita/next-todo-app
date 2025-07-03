@@ -36,6 +36,7 @@ describe("ItemEditDialog", () => {
                 mutate={mutate}
                 open={true}
                 onClose={() => { }}
+                pending={false}
             />
         );
 
@@ -63,6 +64,7 @@ describe("ItemEditDialog", () => {
                 mutate={mutate}
                 open={true}
                 onClose={() => { }}
+                pending={false}
             />
         );
 
