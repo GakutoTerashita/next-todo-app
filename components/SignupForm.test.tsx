@@ -3,8 +3,7 @@ import { describe, expect, it, afterEach, vi } from "vitest";
 import SignupForm from "./SignupForm";
 
 vi.mock('@/app/actions/auth/auth', () => ({
-    __esModule: true,
-    default: vi.fn(() => Promise.resolve(undefined)), // Mock the signup function
+    signup: vi.fn(() => Promise.resolve(undefined)), // Mock the signup function
 }));
 
 describe('Authentication form', () => {

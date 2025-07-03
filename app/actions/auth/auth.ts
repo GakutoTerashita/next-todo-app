@@ -1,7 +1,7 @@
 "use server";
-import { createSession } from '@/lib/session';
+import { createSession, deleteSession } from '@/lib/session';
 import registerUser from './registerUser';
-import validateFormData from './validateFormData';
+import { validateSignupFormData } from './validateFormData';
 import { redirect } from 'next/navigation';
 
 type FormState = {
@@ -13,11 +13,11 @@ type FormState = {
     message?: string;
 } | undefined;
 
-const signup = async (
+export const signup = async (
     state: FormState,
     formData: FormData
 ): Promise<FormState> => {
-    const validatedData = validateFormData(formData);
+    const validatedData = validateSignupFormData(formData);
 
     if ('errors' in validatedData) {
         return {
@@ -35,4 +35,11 @@ const signup = async (
     redirect("/");
 };
 
-export default signup;
+export const login = async (formData: FormData) => {
+
+}
+
+export const logout = async () => {
+    await deleteSession();
+    redirect("/accounts");
+};

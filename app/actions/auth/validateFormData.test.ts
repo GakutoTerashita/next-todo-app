@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import validateFormData from "./validateFormData";
+import { validateSigninFormData, validateSignupFormData } from "./validateFormData";
 
 describe('validateFormData', () => {
     describe('success cases', () => {
@@ -9,7 +9,7 @@ describe('validateFormData', () => {
             formData.append('email', 'valid.email@example.com');
             formData.append('password', 'Valid123');
 
-            const result = validateFormData(formData);
+            const result = validateSignupFormData(formData);
 
             if (!('name' in result) || !('email' in result) || !('password' in result) || 'errors' in result) {
                 throw new Error('Expected validation to succeed');
@@ -27,7 +27,7 @@ describe('validateFormData', () => {
             formData.append('email', 'valid.email@example.com');
             formData.append('password', 'Valid123');
 
-            const result = validateFormData(formData);
+            const result = validateSignupFormData(formData);
 
             if (!('errors' in result)) {
                 throw new Error('Expected validation to fail');
@@ -42,7 +42,7 @@ describe('validateFormData', () => {
             formData.append('email', 'invalid-email');
             formData.append('password', 'Valid123');
 
-            const result = validateFormData(formData);
+            const result = validateSignupFormData(formData);
 
             if (!('errors' in result)) {
                 throw new Error('Expected validation to fail');
@@ -57,7 +57,7 @@ describe('validateFormData', () => {
             formData.append('email', 'valid.email@example.com');
             formData.append('password', 'short');
 
-            const result = validateFormData(formData);
+            const result = validateSignupFormData(formData);
 
             if (!('errors' in result)) {
                 throw new Error('Expected validation to fail');
@@ -75,7 +75,7 @@ describe('validateFormData', () => {
             formData.append('email', 'valid.email@example.com');
             formData.append('password', '123456');
 
-            const result = validateFormData(formData);
+            const result = validateSignupFormData(formData);
 
             if (!('errors' in result)) {
                 throw new Error('Expected validation to fail');
@@ -92,7 +92,7 @@ describe('validateFormData', () => {
             formData.append('email', 'valid.email@example.com');
             formData.append('password', 'abcdef');
 
-            const result = validateFormData(formData);
+            const result = validateSignupFormData(formData);
 
             if (!('errors' in result)) {
                 throw new Error('Expected validation to fail');
@@ -101,6 +101,54 @@ describe('validateFormData', () => {
                 .toEqual([
                     'Contain at least one number',
                 ]);
+        });
+    });
+});
+
+describe('validateSigninFormData', () => {
+    describe('success cases', () => {
+        it('accept valid form data', () => {
+            const formData = new FormData();
+            formData.append('email', 'valid.email@example.com');
+            formData.append('password', 'Valid123');
+
+            const result = validateSigninFormData(formData);
+
+            if (!('email' in result) || !('password' in result) || 'errors' in result) {
+                throw new Error('Expected validation to succeed');
+            }
+            expect(result.email).toBe('valid.email@example.com');
+            expect(result.password).toBe('Valid123');
+        });
+    });
+
+    describe('failure cases', () => {
+        it('deny invalid email', () => {
+            const formData = new FormData();
+            formData.append('email', 'invalid-email');
+            formData.append('password', 'Valid123');
+
+            const result = validateSigninFormData(formData);
+
+            if (!('errors' in result)) {
+                throw new Error('Expected validation to fail');
+            }
+            expect(result.errors.email)
+                .toEqual(['Invalid email address']);
+        });
+
+        it('deny empty password', () => {
+            const formData = new FormData();
+            formData.append('email', 'valid.email@example.com');
+            formData.append('password', '');
+
+            const result = validateSigninFormData(formData);
+
+            if (!('errors' in result)) {
+                throw new Error('Expected validation to fail');
+            }
+            expect(result.errors.password)
+                .toEqual(['Password is required']);
         });
     });
 });
