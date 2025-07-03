@@ -1,26 +1,5 @@
-import bcrypt from 'bcrypt';
-import { dbRegisterUser } from '@/lib/db/users';
+import registerUser from './registerUser';
 import validateFormData from './validateFormData';
-
-export const registerUser = async ({
-    name,
-    email,
-    password
-}: {
-    name: string;
-    email: string;
-    password: string;
-}) => {
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const user = await dbRegisterUser({
-        name,
-        email,
-        hashedPassword
-    });
-
-    return user;
-}
 
 type FormState = {
     errors?: {
@@ -31,7 +10,10 @@ type FormState = {
     message?: string;
 } | undefined;
 
-const signup = async (state: FormState, formData: FormData) => {
+const signup = async (
+    state: FormState,
+    formData: FormData
+): Promise<FormState> => {
     const validatedData = validateFormData(formData);
 
     if ('errors' in validatedData) {
@@ -40,11 +22,14 @@ const signup = async (state: FormState, formData: FormData) => {
         };
     }
 
-    await registerUser({
+    const registered = await registerUser({
         name: validatedData.name,
         email: validatedData.email,
         password: validatedData.password,
     });
+    return {
+        message: `User ${registered.name} registered successfully!`,
+    }
 };
 
 export default signup;
