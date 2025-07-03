@@ -1,3 +1,4 @@
+"use client";
 import { login } from "@/app/actions/auth/auth";
 import { Button, TextField } from "@mui/material";
 import { useActionState } from "react";

@@ -1,8 +1,13 @@
+import LoginForm from "@/components/LoginForm";
 import SignupForm from "@/components/SignupForm"
+import React from "react";
 
 const AccountsPage = () => {
     return (
-        <SignupForm />
+        <React.Fragment>
+            <SignupForm />
+            <LoginForm />
+        </React.Fragment>
     );
 }
 
