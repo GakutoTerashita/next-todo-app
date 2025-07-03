@@ -1,6 +1,6 @@
-import LoginForm from "@/components/LoginForm";
-import LogoutButton from "@/components/LogoutButton";
-import SignupForm from "@/components/SignupForm"
+import LoginForm from "@/components/authentications/LoginForm";
+import LogoutButton from "@/components/authentications/LogoutButton";
+import SignupForm from "@/components/authentications/SignupForm"
 import { Container, Divider } from "@mui/material";
 
 const AccountsPage = () => {
