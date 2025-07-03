@@ -10,7 +10,9 @@ const AccountsPage = () => {
             <Divider sx={{ marginY: 2 }} />
             <LoginForm />
             <Divider sx={{ marginY: 2 }} />
-            <LogoutButton />
+            <div style={{ textAlign: 'right', marginBottom: '1rem' }}>
+                <LogoutButton />
+            </div>
         </Container>
     );
 }
