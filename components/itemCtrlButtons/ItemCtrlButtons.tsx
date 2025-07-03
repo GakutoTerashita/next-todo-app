@@ -3,7 +3,7 @@ import useItemEditDialog from "@/hooks/useItemEditDialog";
 import useTodoMutation from "@/hooks/useTodoMutation";
 import { Button } from "@mui/material";
 import React from "react";
-import ItemEditDialog from "./ItemEditDialog";
+import ItemEditDialog from "../ItemEditDialog";
 
 interface Props {
     completed: boolean;

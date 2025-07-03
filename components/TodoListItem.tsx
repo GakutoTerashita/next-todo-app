@@ -3,7 +3,7 @@
 import { ListItem, Stack } from "@mui/material";
 import { todo_item } from "@prisma/client";
 import React from "react";
-import ItemCtrlButtons from "./ItemCtrlButtons";
+import ItemCtrlButtons from "./itemCtrlButtons/ItemCtrlButtons";
 import dayjs from "dayjs";
 
 interface Props {
