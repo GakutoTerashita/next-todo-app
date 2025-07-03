@@ -1,19 +1,11 @@
 "use server";
+import bcrypt from 'bcrypt';
 import { createSession, deleteSession } from '@/lib/session';
-import registerUser from './registerUser';
-import { validateSigninFormData, validateSignupFormData } from './validateFormData';
+import { validateSigninFormData, validateSignupFormData } from './helpers/validateFormData';
 import { redirect } from 'next/navigation';
-import fetchUserByEmail from './fetchUserByEmail';
-import validatePassword from './validatePassword';
-
-type SingupFormState = {
-    errors?: {
-        name?: string[];
-        email?: string[];
-        password?: string[];
-    }
-    message?: string;
-} | undefined;
+import validatePassword from './helpers/validatePassword';
+import { dbFetchUserByEmail, dbRegisterUser } from '@/lib/db/users';
+import { LoginFormState, SingupFormState } from './types';
 
 export const signup = async (
     state: SingupFormState,
@@ -27,22 +19,25 @@ export const signup = async (
         };
     }
 
-    const registered = await registerUser({
+    const hashedPassword = await bcrypt.hash(validatedData.password, 10);
+
+    const registered = await dbRegisterUser({
         name: validatedData.name,
         email: validatedData.email,
-        password: validatedData.password,
-    });
+        hashedPassword,
+    }).catch(error => ({
+        errors: {
+            general: [`Database error occurred: ${error.code}: ${error.message}`],
+        }
+    }));
+
+    if ('errors' in registered) {
+        return registered;
+    }
 
     await createSession(registered.name);
     redirect("/");
 };
-
-type LoginFormState = {
-    errors?: {
-        email?: string[];
-        password?: string[];
-    }
-} | undefined;
 
 export const login = async (
     state: LoginFormState,
@@ -56,7 +51,7 @@ export const login = async (
         };
     }
 
-    const user = await fetchUserByEmail(validatedData.email);
+    const user = await dbFetchUserByEmail(validatedData.email);
 
     if (!user) {
         return {

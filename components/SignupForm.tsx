@@ -50,6 +50,11 @@ const SignupForm = () => {
                     </div>
                 )}
             </div>
+            {state?.errors?.general && (
+                <div>
+                    <p>{state.errors.general}</p>
+                </div>
+            )}
             <Button
                 type="submit"
                 variant="contained"
