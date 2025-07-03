@@ -1,4 +1,6 @@
 import { z } from 'zod';
+import bcrypt from 'bcrypt';
+import { dbRegisterUser } from '@/lib/db/users';
 
 const SignupFormSchema = z.object({
     name: z
@@ -17,6 +19,40 @@ const SignupFormSchema = z.object({
         .trim(),
 });
 
+export const validateFormData = (formData: FormData) => {
+    const validatedFields = SignupFormSchema.safeParse({
+        name: formData.get('name'),
+        email: formData.get('email'),
+        password: formData.get('password'),
+    });
+
+    if (!validatedFields.success) {
+        return {
+            errors: validatedFields.error.flatten().fieldErrors,
+        }
+    }
+    
+    return validatedFields.data;
+};
+
+const registerUser = async ({
+    name,
+    email,
+    password
+}: {
+    name: string;
+    email: string;
+    password: string;
+}) => {
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = await dbRegisterUser({
+        name,
+        email,
+        hashedPassword
+    });
+}
+
 type FormState = {
     errors?: {
         name?: string[];
@@ -27,19 +63,19 @@ type FormState = {
 } | undefined;
 
 const signup = async (state: FormState, formData: FormData) => {
-    const validatedFileds = SignupFormSchema.safeParse({
-        name: formData.get('name'),
-        email: formData.get('email'),
-        password: formData.get('password'),
-    });
+    const validatedData = validateFormData(formData);
 
-    if (!validatedFileds.success) {
+    if ('errors' in validatedData) {
         return {
-            errors: validatedFileds.error.flatten().fieldErrors,
-        }
+            errors: validatedData.errors,
+        };
     }
 
-    console.warn('db operation not implemented');
+    await registerUser({
+        name: validatedData.name,
+        email: validatedData.email,
+        password: validatedData.password,
+    });
 };
 
 export default signup;
