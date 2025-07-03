@@ -27,3 +27,17 @@ export const dbRegisterUser = async ({
     });
     return registeredUser;
 };
+
+/**
+ * Fetches a user by their email from the database.
+ * @param {string} email - The email of the user to fetch.
+ * @returns {Promise<user | null>} The user object if found, otherwise null.
+ */
+export const dbFetchUserByEmail = async (email: string): Promise<user | null> => {
+    const user = await prisma.user.findUnique({
+        where: {
+            email,
+        },
+    });
+    return user;
+};
