@@ -16,8 +16,8 @@ const ItemCtrlButtons = (props: Props) => {
     const { id, completed } = props;
     const {
         isDialogOpened,
-        handleOpen: handleDialogOpen,
-        handleClose: handleDialogClose,
+        handleDialogOpen,
+        handleDialogClose,
     } = useItemEditDialog();
 
     const mutEdit = useTodoMutation(updateTodoItem.bind(null, props.id), handleDialogClose);
