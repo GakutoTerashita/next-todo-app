@@ -21,8 +21,9 @@ describe("ItemEditDialogContentsForm", () => {
         render(
             <ItemEditDialogContentsForm
                 todoItem={testItem}
-                submitAction={() => { }}
+                action={() => { }}
                 onClose={() => { }}
+                pending={false}
             />
         );
 
@@ -35,8 +36,9 @@ describe("ItemEditDialogContentsForm", () => {
         render(
             <ItemEditDialogContentsForm
                 todoItem={testItem}
-                submitAction={() => { }}
+                action={() => { }}
                 onClose={() => { }}
+                pending={false}
             />
         );
 
@@ -49,8 +51,9 @@ describe("ItemEditDialogContentsForm", () => {
         render(
             <ItemEditDialogContentsForm
                 todoItem={testItem}
-                submitAction={mockMutate}
+                action={mockMutate}
                 onClose={() => { }}
+                pending={false}
             />
         );
 
@@ -73,8 +76,9 @@ describe("ItemEditDialogContentsForm", () => {
         render(
             <ItemEditDialogContentsForm
                 todoItem={testItem}
-                submitAction={() => { }}
+                action={() => { }}
                 onClose={mockHandleClose}
+                pending={false}
             />
         );
 

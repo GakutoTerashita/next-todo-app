@@ -6,12 +6,12 @@ import React from "react";
 interface Props {
     pending: boolean;
     todoItem: todo_item;
-    submitAction: (formData: FormData) => void;
+    action: (formData: FormData) => void;
     onClose: () => void;
 };
 
 const ItemEditDialogContentsForm = (props: Props) => {
-    const { pending, todoItem, submitAction, onClose } = props;
+    const { pending, todoItem, action, onClose } = props;
 
     return (
         <React.Fragment>
@@ -19,7 +19,7 @@ const ItemEditDialogContentsForm = (props: Props) => {
                 <DialogContentText>
                     To edit this todo item, please enter the new details here.
                 </DialogContentText>
-                <form action={submitAction} id={`edit-form-${todoItem.id}`}>
+                <form action={action} id={`edit-form-${todoItem.id}`}>
                     <TextField
                         autoFocus
                         margin="dense"

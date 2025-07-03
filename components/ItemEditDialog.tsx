@@ -37,7 +37,7 @@ const ItemEditDialog = ({
                 <ItemEditDialogContentsForm
                     pending={pending}
                     todoItem={data}
-                    submitAction={mutate}
+                    action={mutate}
                     onClose={onClose}
                 />
             )}
