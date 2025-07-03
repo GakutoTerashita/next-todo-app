@@ -20,6 +20,8 @@ const CompleteButton = (props: Props) => {
                 color={completed ? "success" : "primary"}
                 type="submit"
                 sx={{ marginRight: 1 }}
+                disabled={mutComplete.isPending || mutUncomplete.isPending}
+                loading={mutComplete.isPending || mutUncomplete.isPending}
             >
                 {completed ? "Completed" : "Complete"}
             </Button>
