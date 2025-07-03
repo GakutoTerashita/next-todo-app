@@ -4,13 +4,14 @@ import dayjs from "dayjs";
 import React from "react";
 
 interface Props {
+    pending: boolean;
     todoItem: todo_item;
     submitAction: (formData: FormData) => void;
     onClose: () => void;
 };
 
 const ItemEditDialogContentsForm = (props: Props) => {
-    const { todoItem, submitAction, onClose } = props;
+    const { pending, todoItem, submitAction, onClose } = props;
 
     return (
         <React.Fragment>
@@ -52,7 +53,14 @@ const ItemEditDialogContentsForm = (props: Props) => {
             </DialogContent>
             <DialogActions>
                 <Button onClick={onClose}>Cancel</Button>
-                <Button type="submit" form={`edit-form-${todoItem.id}`}>Confirm</Button>
+                <Button
+                    type="submit"
+                    form={`edit-form-${todoItem.id}`}
+                    disabled={pending}
+                    loading={pending}
+                >
+                    Confirm
+                </Button>
             </DialogActions>
         </React.Fragment>
     )

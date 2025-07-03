@@ -8,6 +8,7 @@ import ItemEditDialogContentsForm from './ItemEditDialogContentsForm';
 interface Props {
     itemId: string;
     mutate: (formData: FormData) => void;
+    pending: boolean;
     open: boolean;
     onClose: () => void;
 };
@@ -15,6 +16,7 @@ interface Props {
 const ItemEditDialog = ({
     itemId,
     mutate,
+    pending,
     open,
     onClose,
 }: Props) => {
@@ -33,6 +35,7 @@ const ItemEditDialog = ({
 
             {data && (
                 <ItemEditDialogContentsForm
+                    pending={pending}
                     todoItem={data}
                     submitAction={mutate}
                     onClose={onClose}

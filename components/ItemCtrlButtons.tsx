@@ -46,6 +46,7 @@ const ItemCtrlButtons = (props: Props) => {
             <ItemEditDialog
                 itemId={props.id}
                 mutate={mutEdit.mutate}
+                pending={mutEdit.isPending}
                 open={editDialogOpen}
                 onClose={handleClose}
             />
