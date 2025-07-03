@@ -15,7 +15,7 @@ interface Props {
 const ItemCtrlButtons = (props: Props) => {
     const { id, completed } = props;
     const {
-        open: openDialog,
+        isDialogOpened,
         handleOpen: handleDialogOpen,
         handleClose: handleDialogClose,
     } = useItemEditDialog();
@@ -31,7 +31,7 @@ const ItemCtrlButtons = (props: Props) => {
                 itemId={props.id}
                 mutate={mutEdit.mutate}
                 pending={mutEdit.isPending}
-                open={openDialog}
+                open={isDialogOpened}
                 onClose={handleDialogClose}
             />
             <DeleteButton id={id} />

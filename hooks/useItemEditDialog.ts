@@ -10,7 +10,7 @@ const useItemEditDialog = () => {
     };
 
     return {
-        open,
+        isDialogOpened: open,
         handleOpen,
         handleClose
     };

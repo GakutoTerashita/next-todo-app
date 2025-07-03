@@ -8,19 +8,19 @@ describe('useItemEditDialog', () => {
         const { result } = renderHook(() => useItemEditDialog());
 
         // Initial state should be closed
-        expect(result.current.open).toBe(false);
+        expect(result.current.isDialogOpened).toBe(false);
 
         // Open the dialog
         act(() => {
             result.current.handleOpen();
         });
-        expect(result.current.open).toBe(true);
+        expect(result.current.isDialogOpened).toBe(true);
 
         // Close the dialog
         act(() => {
             result.current.handleClose();
         });
-        expect(result.current.open).toBe(false);
+        expect(result.current.isDialogOpened).toBe(false);
     });
 
     it('returns correct handlers', () => {
@@ -30,6 +30,6 @@ describe('useItemEditDialog', () => {
         expect(typeof result.current.handleClose).toBe('function');
 
         // Ensure the initial state is closed
-        expect(result.current.open).toBe(false);
+        expect(result.current.isDialogOpened).toBe(false);
     });
 });
