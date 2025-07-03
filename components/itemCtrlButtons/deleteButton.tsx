@@ -1,7 +1,7 @@
 "use client";
 
 import { deleteTodoItem } from "@/app/actions/todo";
-import useTodoMutation from "@/hooks/useTodoMutation";
+import useTodoItemMutation from "@/hooks/useTodoItemMutation";
 import { Button } from "@mui/material";
 
 interface Props {
@@ -9,7 +9,7 @@ interface Props {
 }
 const DeleteButton = (props: Props) => {
     const { id } = props;
-    const mutDelete = useTodoMutation(deleteTodoItem);
+    const mutDelete = useTodoItemMutation(deleteTodoItem);
 
     return (
         <form action={mutDelete.mutate}>

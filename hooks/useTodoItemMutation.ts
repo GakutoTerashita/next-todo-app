@@ -1,6 +1,6 @@
 import { MutationFunction, useMutation, useQueryClient } from "@tanstack/react-query";
 
-const useTodoMutation = (
+const useTodoItemMutation = (
     mutationFn: MutationFunction<void, FormData>,
     optionalOnSuccess?: () => void,
 ) => {
@@ -18,4 +18,4 @@ const useTodoMutation = (
     return mutation;
 };
 
-export default useTodoMutation;
+export default useTodoItemMutation;

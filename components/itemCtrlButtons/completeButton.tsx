@@ -1,5 +1,5 @@
 import { completeTodoItem, uncompleteTodoItem } from "@/app/actions/todo";
-import useTodoMutation from "@/hooks/useTodoMutation";
+import useTodoItemMutation from "@/hooks/useTodoItemMutation";
 import { Button } from "@mui/material";
 
 
@@ -9,8 +9,8 @@ interface Props {
 }
 const CompleteButton = (props: Props) => {
     const { id, completed } = props;
-    const mutComplete = useTodoMutation(completeTodoItem);
-    const mutUncomplete = useTodoMutation(uncompleteTodoItem);
+    const mutComplete = useTodoItemMutation(completeTodoItem);
+    const mutUncomplete = useTodoItemMutation(uncompleteTodoItem);
 
     return (
         <form action={completed ? mutUncomplete.mutate : mutComplete.mutate}>

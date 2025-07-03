@@ -1,6 +1,6 @@
 import { updateTodoItem } from "@/app/actions/todo";
 import useItemEditDialog from "@/hooks/useItemEditDialog";
-import useTodoMutation from "@/hooks/useTodoMutation";
+import useTodoItemMutation from "@/hooks/useTodoItemMutation";
 import React from "react";
 import ItemEditDialog from "./ItemEditDialog";
 import DeleteButton from "./deleteButton";
@@ -20,7 +20,7 @@ const ItemCtrlButtons = (props: Props) => {
         handleDialogClose,
     } = useItemEditDialog();
 
-    const mutEdit = useTodoMutation(updateTodoItem.bind(null, props.id), handleDialogClose);
+    const mutEdit = useTodoItemMutation(updateTodoItem.bind(null, props.id), handleDialogClose);
 
 
     return (

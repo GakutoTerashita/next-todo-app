@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { renderHook, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider, useQueryClient } from "@tanstack/react-query";
-import useTodoMutation from "./useTodoMutation";
+import useTodoItemMutation from "./useTodoItemMutation";
 
 vi.mock('@tanstack/react-query', async (importOriginal) => ({
     ...await importOriginal<typeof import('@tanstack/react-query')>(),
@@ -25,7 +25,7 @@ describe('useTodoMutation', () => {
         const invalidateQueriesSpy = vi.spyOn(queryClient, 'invalidateQueries');
 
         const { result } = renderHook(
-            () => useTodoMutation(mockMutationFn),
+            () => useTodoItemMutation(mockMutationFn),
             {
                 wrapper: ({ children }) => (
                     <QueryClientProvider client={queryClient}>
@@ -55,7 +55,7 @@ describe('useTodoMutation', () => {
         mockUseQueryClient.mockReturnValue(queryClient);
         const invalidateQueriesSpy = vi.spyOn(queryClient, 'invalidateQueries');
         const { result } = renderHook(
-            () => useTodoMutation(mockMutationFn, optionalOnSuccess),
+            () => useTodoItemMutation(mockMutationFn, optionalOnSuccess),
             {
                 wrapper: ({ children }) => (
                     <QueryClientProvider client={queryClient}>
@@ -86,7 +86,7 @@ describe('useTodoMutation', () => {
         const invalidateQueriesSpy = vi.spyOn(queryClient, 'invalidateQueries');
 
         const { result } = renderHook(
-            () => useTodoMutation(mockMutationFn),
+            () => useTodoItemMutation(mockMutationFn),
             {
                 wrapper: ({ children }) => (
                     <QueryClientProvider client={queryClient}>
