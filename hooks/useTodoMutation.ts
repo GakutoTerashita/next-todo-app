@@ -5,8 +5,7 @@ const useTodoMutation = (
     optionalOnSuccess?: () => void,
 ) => {
     const queryClient = useQueryClient();
-
-    return useMutation({
+    const mutation = useMutation({
         mutationFn,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["todoItems"] });
@@ -14,7 +13,9 @@ const useTodoMutation = (
                 optionalOnSuccess();
             }
         },
-    })
+    });
+
+    return mutation;
 };
 
 export default useTodoMutation;
