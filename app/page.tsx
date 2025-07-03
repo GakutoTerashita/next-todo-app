@@ -1,6 +1,6 @@
 "use client";
 import ItemRegistrationForm from "@/components/ItemRegistrationForm";
-import TodoList from "@/components/TodoList";
+import TodoList from "@/components/todoList/TodoList";
 import { Container, List, Paper, styled } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
