@@ -3,7 +3,7 @@ import { getTodoItemById } from '@/app/actions/todo';
 import { Dialog, DialogTitle } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import React from 'react';
-import ItemEditDialogContentsForm from '../ItemEditDialogContentsForm';
+import ItemEditDialogContentsForm from './ItemEditDialogContentsForm';
 
 interface Props {
     itemId: string;
