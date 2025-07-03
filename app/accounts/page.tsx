@@ -1,7 +1,7 @@
 import LoginForm from "@/components/LoginForm";
+import LogoutButton from "@/components/LogoutButton";
 import SignupForm from "@/components/SignupForm"
 import { Container, Divider } from "@mui/material";
-import React from "react";
 
 const AccountsPage = () => {
     return (
@@ -9,6 +9,8 @@ const AccountsPage = () => {
             <SignupForm />
             <Divider sx={{ marginY: 2 }} />
             <LoginForm />
+            <Divider sx={{ marginY: 2 }} />
+            <LogoutButton />
         </Container>
     );
 }
