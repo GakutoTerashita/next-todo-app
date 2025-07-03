@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { validateFormData } from "./auth";
+import validateFormData from "./validateFormData";
 
 describe('validateFormData', () => {
     describe('success cases', () => {
