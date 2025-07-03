@@ -1,6 +1,11 @@
 import { cleanup, render, screen } from "@testing-library/react";
-import { describe, expect, it, afterEach } from "vitest";
+import { describe, expect, it, afterEach, vi } from "vitest";
 import SignupForm from "./SignupForm";
+
+vi.mock('@/app/actions/auth/auth', () => ({
+    __esModule: true,
+    default: vi.fn(() => Promise.resolve(undefined)), // Mock the signup function
+}));
 
 describe('Authentication form', () => {
     afterEach(() => {

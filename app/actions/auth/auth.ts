@@ -1,6 +1,8 @@
 "use server";
+import { createSession } from '@/lib/session';
 import registerUser from './registerUser';
 import validateFormData from './validateFormData';
+import { redirect } from 'next/navigation';
 
 type FormState = {
     errors?: {
@@ -28,9 +30,9 @@ const signup = async (
         email: validatedData.email,
         password: validatedData.password,
     });
-    return {
-        message: `User ${registered.name} registered successfully!`,
-    }
+
+    await createSession(registered.name);
+    redirect("/");
 };
 
 export default signup;
