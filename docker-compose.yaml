@@ -1,0 +1,13 @@
+services:
+  test-db:
+    image: mysql:8.0
+    container_name: integration-test-prisma-mysql
+    ports:
+      - '5433:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: nextTodo
+      MYSQL_USER: nextTodo
+      MYSQL_PASSWORD: nextTodo
+    tmpfs:
+      - /var/lib/mysql
