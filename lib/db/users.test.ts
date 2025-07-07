@@ -1,28 +1,18 @@
 import { afterEach, describe, expect, it } from "vitest";
 import { dbFetchUserByEmail, dbRegisterUser } from "./users";
-import { exec } from "node:child_process";
+import { execSync } from "node:child_process";
 
 describe('database integration tests', () => {
 
     afterEach(() => {
-        exec('npx prisma migrate reset --force', (error, stdout, stderr) => {
-            if (error) {
-                console.error(`Error resetting database: ${error.message}`);
-                return;
-            }
-            if (stderr) {
-                console.error(`stderr: ${stderr}`);
-                return;
-            }
-            console.log(`stdout: ${stdout}`);
-        });
+        execSync('npx prisma migrate reset --force --skip-generate', { stdio: 'inherit' });
     });
 
     describe('dbRegisterUser', () => {
         it('returns a registered user', async () => {
             const user = {
-                name: 'Joh Doe',
-                email: 'joh@example.com',
+                name: 'John Doe',
+                email: 'john@example.com',
                 hashedPassword: 'password123',
             };
 
