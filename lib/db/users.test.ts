@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it } from "vitest";
 import { dbFetchUserByEmail, dbRegisterUser } from "./users";
 import { execSync } from "node:child_process";
+import { prisma } from "@/lib/prisma";
 
 describe('database integration tests', () => {
 
@@ -20,6 +21,23 @@ describe('database integration tests', () => {
             expect(result).toHaveProperty('name', user.name);
             expect(result).toHaveProperty('email', user.email);
             expect(result).toHaveProperty('hashedPassword', user.hashedPassword);
+        });
+
+        it('registers a user', async () => {
+            const user = {
+                name: 'Jane Doe',
+                email: 'jane@example.com',
+                hashedPassword: 'password456',
+            };
+
+            await dbRegisterUser(user);
+
+            const regUser = await prisma.user.findUnique({
+                where: { email: user.email },
+            });
+            expect(regUser).toHaveProperty('name', user.name);
+            expect(regUser).toHaveProperty('email', user.email);
+            expect(regUser).toHaveProperty('hashedPassword', user.hashedPassword);
         });
 
         // it('throws an error if database operation fails', async () => {
