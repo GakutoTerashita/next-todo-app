@@ -8,6 +8,7 @@ export default defineConfig({
         react()
     ],
     test: {
+        globalSetup: './vitest-global-setup.ts',
         environment: 'jsdom',
         include: ['**/*.test.ts', '**/*.test.tsx'],
         setupFiles: ['./vitest-setup.ts'],
