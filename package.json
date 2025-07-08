@@ -7,14 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "npm run test:db:start && npm run test:db:setup && npm run test:run && npm run test:db:stop",
-    "test:ui": "npm run test:db:start && npm run test:db:setup && npm run test:run:ui && npm run test:db:stop",
-    "test:run": "dotenv -e .env.test -- vitest --run",
-    "test:run:ui": "dotenv -e .env.test -- vitest --ui --api 3070",
-    "test:db:start": "docker compose up test-db -d && sleep 15",
-    "test:db:setup": "dotenv -e .env.test -- prisma migrate reset --force --skip-generate && dotenv -e .env.test -- npx prisma db push",
-    "test:db:stop": "docker compose down",
-    "test:db:logs": "docker compose logs test-db",
+    "test": "dotenv -e .env.test -- vitest --run",
+    "test:ui": "dotenv -e .env.test -- vitest --ui --api 3070",
     "db:migrate": "dotenv -e .env.local -- prisma migrate dev"
   },
   "dependencies": {
