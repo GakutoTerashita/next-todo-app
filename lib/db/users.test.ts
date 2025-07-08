@@ -1,4 +1,4 @@
-import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { dbFetchUserByEmail, dbRegisterUser } from "./users";
 import { PrismaClient } from "@prisma/client";
 import { setupTestDb, teardownTestDB } from "./test-utils";
@@ -21,6 +21,10 @@ beforeAll(async () => {
 
 afterAll(async () => {
     await teardownTestDB(prisma, dbName);
+});
+
+beforeEach(async () => {
+    await prisma.user.deleteMany();
 });
 
 describe('dbRegisterUser', () => {
