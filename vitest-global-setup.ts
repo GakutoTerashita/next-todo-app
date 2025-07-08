@@ -3,7 +3,7 @@ import { execSync } from "node:child_process";
 export const setup = async () => {
     console.log('Setting up test database...');
     execSync('docker compose up test-db -d', { stdio: 'inherit' });
-    await new Promise(resolve => setTimeout(resolve, 15000));
+    await new Promise(resolve => setTimeout(resolve, 30000));
     console.log('Test database setup complete.');
 };
 

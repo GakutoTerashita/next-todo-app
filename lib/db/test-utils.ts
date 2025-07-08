@@ -6,7 +6,7 @@ const databaseUrl = new URL(process.env.DATABASE_URL!);
 
 export const setupTestDb = () => {
     const dbName = `test_${randomUUID().replace(/-/g, '')}`;
-    const dbUrl = `${databaseUrl.protocol}//${databaseUrl.username}:${databaseUrl.password}@${databaseUrl.host}/${dbName}`;
+    const dbUrl = `${databaseUrl.protocol}//${databaseUrl.username}:${databaseUrl.password}@${databaseUrl.host}/${dbName}?sslaccept=disabled`;
 
     process.env.DATABASE_URL = dbUrl;
 
@@ -30,9 +30,12 @@ export const setupTestDb = () => {
 };
 
 export const teardownTestDB = async (prisma: PrismaClient, dbName: string) => {
+    if (!prisma) {
+        return;
+    }
     await prisma.$disconnect();
 
-    const adminUrl = `${databaseUrl.protocol}//${databaseUrl.username}:${databaseUrl.password}@${databaseUrl.host}/mysql`;
+    const adminUrl = `${databaseUrl.protocol}//${databaseUrl.username}:${databaseUrl.password}@${databaseUrl.host}/mysql?sslaccept=disabled`;
     const adminPrisma = new PrismaClient({
         datasources: { db: { url: adminUrl } },
     });

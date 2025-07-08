@@ -7,7 +7,5 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: nextTodo
-      MYSQL_USER: nextTodo
-      MYSQL_PASSWORD: nextTodo
     tmpfs:
       - /var/lib/mysql
