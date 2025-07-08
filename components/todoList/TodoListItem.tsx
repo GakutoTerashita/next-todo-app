@@ -11,7 +11,6 @@ interface Props {
 }
 
 const TodoListItem = (props: Props) => {
-    console.log(props.item.deadline);
     return (
         <ListItem key={props.item.id}>
             <Stack direction="row" sx={{ width: '100%', justifyContent: 'space-between', alignItems: 'center' }}>
