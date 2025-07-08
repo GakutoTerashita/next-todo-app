@@ -29,7 +29,7 @@ beforeEach(async () => {
 
 describe('dbFetchAllTodoItems', () => {
     describe('success case', () => {
-        it('returns fetched items', async () => {
+        it('creates todo items', async () => {
             const data = [
                 {
                     id: '1',
@@ -73,7 +73,7 @@ describe('dbFetchAllTodoItems', () => {
 
 describe('dbFetchTodoItemsCompleted', () => {
     describe('success case', () => {
-        it('returns fetched items', async () => {
+        it('fetches completed todo items', async () => {
             const data = [
                 {
                     id: '1',
@@ -105,7 +105,7 @@ describe('dbFetchTodoItemsCompleted', () => {
 
 describe('dbFetchTodoItemById', () => {
     describe('success case', () => {
-        it('returns fetched items, calls where id', async () => {
+        it('fetches a todo item by ID', async () => {
             const data = {
                 id: '1',
                 title: 'Test Todo',
@@ -323,7 +323,7 @@ describe('dbUncompleteTodoItem', () => {
 
 describe('dbUpdateTodoItem', () => {
     describe('success case', () => {
-        it('updates a todo item in the database', async () => {
+        it('updates a todo item data in the database', async () => {
             const data = {
                 id: '1',
                 title: 'Updated Todo',
