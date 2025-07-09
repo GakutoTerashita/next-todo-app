@@ -1,11 +1,35 @@
 "use server";
 import bcrypt from 'bcrypt';
 import { createSession, deleteSession } from '@/lib/session';
-import { validateSigninFormData, validateSignupFormData } from './helpers/validateFormData';
+import { ValidatedSignupData, validateSigninFormData, validateSignupFormData } from './helpers/validateFormData';
 import { redirect } from 'next/navigation';
 import validatePassword from './helpers/validatePassword';
 import { dbFetchUserByEmail, dbRegisterUser } from '@/lib/db/users';
 import { LoginFormState, SignupFormState } from './types';
+
+export const registerUserAndCreateSession = async (
+    validatedSignupData: ValidatedSignupData
+) => {
+    const hashedPassword = await bcrypt.hash(validatedSignupData.password, 10);
+
+    const registeredUser = await dbRegisterUser({
+        name: validatedSignupData.name,
+        email: validatedSignupData.email,
+        hashedPassword,
+    }).catch(error => ({
+        errors: {
+            general: [`Database error occurred: ${error.code}: ${error.message}`],
+        }
+    }));
+
+    if ('errors' in registeredUser) {
+        return registeredUser;
+    }
+
+    await createSession(registeredUser.name);
+
+    return { success: true };
+}
 
 export const signup = async (
     state: SignupFormState,
@@ -19,23 +43,16 @@ export const signup = async (
         };
     }
 
-    const hashedPassword = await bcrypt.hash(validatedData.password, 10);
+    const result = await registerUserAndCreateSession(validatedData);
 
-    const registered = await dbRegisterUser({
-        name: validatedData.name,
-        email: validatedData.email,
-        hashedPassword,
-    }).catch(error => ({
-        errors: {
-            general: [`Database error occurred: ${error.code}: ${error.message}`],
-        }
-    }));
-
-    if ('errors' in registered) {
-        return registered;
+    if (!('success' in result)) {
+        return {
+            errors: {
+                general: [result.errors.general?.[0]],
+            }
+        };
     }
 
-    await createSession(registered.name);
     redirect("/");
 };
 

@@ -17,7 +17,23 @@ const signupFormSchema = z.object({
         .trim(),
 });
 
-export const validateSignupFormData = (formData: FormData) => {
+export type ValidatedSignupData = {
+    name: string;
+    email: string;
+    password: string;
+}
+
+export type SignupFormErrors = {
+    errors: {
+        name?: string[] | undefined;
+        email?: string[] | undefined;
+        password?: string[] | undefined;
+    };
+};
+
+export const validateSignupFormData = (
+    formData: FormData
+): ValidatedSignupData | SignupFormErrors => {
     const validatedFields = signupFormSchema.safeParse({
         name: formData.get('name'),
         email: formData.get('email'),
