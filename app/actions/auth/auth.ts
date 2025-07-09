@@ -8,6 +8,28 @@ import { dbFetchUserByEmail, dbRegisterUser } from '@/lib/db/users';
 import { LoginFormState, SignupFormState } from './types';
 import { Prisma } from '@prisma/client';
 
+export const handleSignupError = (
+    error: unknown
+): SignupFormState => {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2002') {
+            return {
+                errors: {
+                    email: ['This email address is already in use.'],
+                }
+            };
+        }
+    }
+
+    console.error('An unexpected error occurred during signup:', error);
+
+    return {
+        errors: {
+            general: ['An unexpected error occurred. Please try again.'],
+        }
+    };
+};
+
 export const registerUserAndCreateSession = async (
     validatedSignupData: ValidatedSignupData
 ): Promise<void> => {
@@ -37,22 +59,7 @@ export const signup = async (
     try {
         await registerUserAndCreateSession(validatedData);
     } catch (error) {
-
-        if (error instanceof Prisma.PrismaClientKnownRequestError) {
-            if (error.code === 'P2002') {
-                return {
-                    errors: {
-                        email: ['This email address is already in use.'],
-                    }
-                };
-            }
-        }
-
-        return {
-            errors: {
-                general: ['An unexpected error occurred. Please try again.'],
-            }
-        };
+        return handleSignupError(error);
     }
 
     redirect("/");
