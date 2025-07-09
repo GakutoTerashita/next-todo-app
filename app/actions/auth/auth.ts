@@ -6,30 +6,21 @@ import { redirect } from 'next/navigation';
 import validatePassword from './helpers/validatePassword';
 import { dbFetchUserByEmail, dbRegisterUser } from '@/lib/db/users';
 import { LoginFormState, SignupFormState } from './types';
+import { Prisma } from '@prisma/client';
 
 export const registerUserAndCreateSession = async (
     validatedSignupData: ValidatedSignupData
-) => {
+): Promise<void> => {
     const hashedPassword = await bcrypt.hash(validatedSignupData.password, 10);
 
     const registeredUser = await dbRegisterUser({
         name: validatedSignupData.name,
         email: validatedSignupData.email,
         hashedPassword,
-    }).catch(error => ({
-        errors: {
-            general: [`Database error occurred: ${error.code}: ${error.message}`],
-        }
-    }));
-
-    if ('errors' in registeredUser) {
-        return registeredUser;
-    }
+    });
 
     await createSession(registeredUser.name);
-
-    return { success: true };
-}
+};
 
 export const signup = async (
     state: SignupFormState,
@@ -43,12 +34,23 @@ export const signup = async (
         };
     }
 
-    const result = await registerUserAndCreateSession(validatedData);
+    try {
+        await registerUserAndCreateSession(validatedData);
+    } catch (error) {
 
-    if (!('success' in result)) {
+        if (error instanceof Prisma.PrismaClientKnownRequestError) {
+            if (error.code === 'P2002') {
+                return {
+                    errors: {
+                        email: ['This email address is already in use.'],
+                    }
+                };
+            }
+        }
+
         return {
             errors: {
-                general: [result.errors.general?.[0]],
+                general: ['An unexpected error occurred. Please try again.'],
             }
         };
     }
