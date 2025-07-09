@@ -5,12 +5,12 @@ import { validateSigninFormData, validateSignupFormData } from './helpers/valida
 import { redirect } from 'next/navigation';
 import validatePassword from './helpers/validatePassword';
 import { dbFetchUserByEmail, dbRegisterUser } from '@/lib/db/users';
-import { LoginFormState, SingupFormState } from './types';
+import { LoginFormState, SignupFormState } from './types';
 
 export const signup = async (
-    state: SingupFormState,
+    state: SignupFormState,
     formData: FormData
-): Promise<SingupFormState> => {
+): Promise<SignupFormState> => {
     const validatedData = validateSignupFormData(formData);
 
     if ('errors' in validatedData) {

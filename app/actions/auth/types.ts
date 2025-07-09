@@ -1,4 +1,4 @@
-export type SingupFormState = {
+export type SignupFormState = {
     errors?: {
         name?: string[];
         email?: string[];
