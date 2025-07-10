@@ -60,7 +60,21 @@ const signinFormData = z.object({
         .trim(),
 });
 
-export const validateSigninFormData = (formData: FormData) => {
+export type ValidatedSigninData = {
+    email: string;
+    password: string;
+}
+
+export type SigninFormErrors = {
+    errors: {
+        email?: string[] | undefined;
+        password?: string[] | undefined;
+    };
+};
+
+export const validateSigninFormData = (
+    formData: FormData
+): ValidatedSigninData | SigninFormErrors => {
     const validatedFields = signinFormData.safeParse({
         email: formData.get('email'),
         password: formData.get('password'),

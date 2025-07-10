@@ -32,6 +32,7 @@ const LoginForm = () => {
                 required
             />
             {state?.errors?.password && <p>{state.errors.password}</p>}
+            {state?.errors?.general && (<p>{state.errors.general}</p>)}
             <Button
                 type="submit"
                 variant="contained"

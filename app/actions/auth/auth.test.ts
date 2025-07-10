@@ -3,7 +3,7 @@ import { createSession } from "@/lib/session";
 import { describe, expect, vi, it, afterEach } from "vitest";
 import { validateSignupFormData } from "./helpers/validateFormData";
 import { signup } from "./auth";
-import { handleSignupError } from "./helpers/handleSignupError";
+import { handleSignupError } from "./helpers/handleAuthError";
 import { redirect } from "next/navigation";
 
 vi.mock('@/lib/db/users', () => ({
@@ -24,7 +24,7 @@ vi.mock('@/app/actions/auth/helpers/validateFormData', () => ({
 
 const mockedValidateSignupFormData = vi.mocked(validateSignupFormData);
 
-vi.mock('./helpers/handleSignupError', async () => ({
+vi.mock('./helpers/handleAuthError', async () => ({
     handleSignupError: vi.fn(),
 }));
 

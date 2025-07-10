@@ -1,5 +1,5 @@
 import { Prisma } from "@prisma/client";
-import { SignupFormState } from "../types";
+import { LoginFormState, SignupFormState } from "../types";
 
 export const handleSignupError = (
     error: unknown
@@ -22,3 +22,21 @@ export const handleSignupError = (
         }
     };
 };
+
+export const handleLoginError = (
+    error: unknown
+): LoginFormState => {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        return {
+            errors: {
+                general: ['An unexpected database error occurred.'],
+            }
+        }
+    }
+
+    return {
+        errors: {
+            general: ['An unexpected error occurred. Please try again.'],
+        },
+    }
+}

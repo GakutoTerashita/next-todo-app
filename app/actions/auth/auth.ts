@@ -6,7 +6,7 @@ import { redirect } from 'next/navigation';
 import validatePassword from './helpers/validatePassword';
 import { dbFetchUserByEmail, dbRegisterUser } from '@/lib/db/users';
 import { LoginFormState, SignupFormState } from './types';
-import { handleSignupError } from './helpers/handleSignupError';
+import { handleLoginError, handleSignupError } from './helpers/handleAuthError';
 
 export const signup = async (
     state: SignupFormState,
@@ -40,7 +40,7 @@ export const signup = async (
 export const login = async (
     state: LoginFormState,
     formData: FormData,
-) => {
+): Promise<LoginFormState> => {
     const validatedData = validateSigninFormData(formData);
 
     if ('errors' in validatedData) {
@@ -49,25 +49,29 @@ export const login = async (
         };
     }
 
-    const user = await dbFetchUserByEmail(validatedData.email);
+    try {
+        const user = await dbFetchUserByEmail(validatedData.email);
 
-    if (!user) {
-        return {
-            errors: {
-                email: ['User not found'],
-            },
-        };
+        if (!user) {
+            return {
+                errors: {
+                    email: ['User not found'],
+                },
+            };
+        }
+
+        if (!validatePassword(validatedData.password, user.hashedPassword)) {
+            return {
+                errors: {
+                    password: ['Invalid password'],
+                },
+            };
+        }
+
+        await createSession(user.name);
+    } catch (error) {
+        return handleLoginError(error);
     }
-
-    if (!validatePassword(validatedData.password, user.hashedPassword)) {
-        return {
-            errors: {
-                password: ['Invalid password'],
-            },
-        };
-    }
-
-    await createSession(user.name);
     redirect("/");
 };
 
