@@ -1,16 +1,19 @@
-import { dbRegisterUser } from "@/lib/db/users";
+import { dbFetchUserByEmail, dbRegisterUser } from "@/lib/db/users";
 import { createSession } from "@/lib/session";
 import { describe, expect, vi, it, afterEach } from "vitest";
-import { validateSignupFormData } from "./helpers/validateFormData";
-import { signup } from "./auth";
+import { validateSigninFormData, validateSignupFormData } from "./helpers/validateFormData";
+import { login, signup } from "./auth";
 import { handleSignupError } from "./helpers/handleAuthError";
 import { redirect } from "next/navigation";
+import { validatePassword } from "./helpers/validatePassword";
 
 vi.mock('@/lib/db/users', () => ({
     dbRegisterUser: vi.fn(),
+    dbFetchUserByEmail: vi.fn(),
 }));
 
 const mockedDbRegisterUser = vi.mocked(dbRegisterUser);
+const mockedDbFetchUserByEmail = vi.mocked(dbFetchUserByEmail);
 
 vi.mock('@/lib/session', () => ({
     createSession: vi.fn(),
@@ -20,15 +23,23 @@ const mockedCreateSession = vi.mocked(createSession);
 
 vi.mock('@/app/actions/auth/helpers/validateFormData', () => ({
     validateSignupFormData: vi.fn(),
+    validateSigninFormData: vi.fn(),
 }));
 
 const mockedValidateSignupFormData = vi.mocked(validateSignupFormData);
+const mockedValidateSigninFormData = vi.mocked(validateSigninFormData);
 
 vi.mock('./helpers/handleAuthError', async () => ({
     handleSignupError: vi.fn(),
 }));
 
 const mockedHandleSignupError = vi.mocked(handleSignupError);
+
+vi.mock('./helpers/validatePassword', () => ({
+    validatePassword: vi.fn(),
+}));
+
+const mockedValidatePassword = vi.mocked(validatePassword);
 
 vi.mock('next/navigation', () => ({
     redirect: vi.fn(),
@@ -41,7 +52,6 @@ describe('auth.ts', () => {
         afterEach(() => {
             vi.clearAllMocks();
         });
-
 
         it('should register user, create session, and redirect on success', async () => {
             const validData = { name: 'Test User', email: 'test@example.com', password: 'password123' };
@@ -65,7 +75,7 @@ describe('auth.ts', () => {
             expect(mockedRedirect).toHaveBeenCalledWith('/');
         });
 
-        it('should not create session or redirect if user registration fails', async () => {
+        it('should not create session or redirect if user registration fails because of duplicate email key', async () => {
             const validData = { name: 'Test User', email: 'test@example.com', password: 'password123' };
             mockedValidateSignupFormData.mockReturnValue(validData);
             const dbError = new Error('DB Error');
@@ -94,6 +104,91 @@ describe('auth.ts', () => {
 
             expect(result).toEqual({ errors });
             expect(mockedDbRegisterUser).not.toHaveBeenCalled();
+            expect(mockedCreateSession).not.toHaveBeenCalled();
+            expect(mockedRedirect).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('login', () => {
+        afterEach(() => {
+            vi.clearAllMocks();
+        });
+
+        it('should fetch user, create session, and redirect on successful login', async () => {
+            const validData = { email: 'test@example.com', password: 'password123' };
+            mockedValidateSigninFormData.mockReturnValue(validData);
+            const fetchedUser = {
+                name: 'Test User',
+                email: validData.email,
+                hashedPassword: 'hashed_password'
+            };
+            mockedDbFetchUserByEmail.mockResolvedValue(fetchedUser);
+            mockedValidatePassword.mockResolvedValue(true);
+
+            const formData = new FormData();
+            await login({ errors: {} }, formData);
+
+            // 1. ユーザー取得が呼ばれたか
+            expect(mockedDbFetchUserByEmail).toHaveBeenCalledWith(validData.email);
+
+            // 2. セッション作成が呼ばれたか
+            expect(mockedCreateSession).toHaveBeenCalledWith(fetchedUser.name);
+
+            // 3. リダイレクトが呼ばれたか
+            expect(mockedRedirect).toHaveBeenCalledWith('/');
+        });
+
+        it('should not create session or redirect if user not found', async () => {
+            const validData = { email: 'test@example.com', password: 'password123' };
+            mockedValidateSigninFormData.mockReturnValue(validData);
+            mockedDbFetchUserByEmail.mockResolvedValue(null);
+
+            const formData = new FormData();
+            await login({ errors: {} }, formData);
+
+            // 1. ユーザー取得が呼ばれたか
+            expect(mockedDbFetchUserByEmail).toHaveBeenCalledWith(validData.email);
+
+            // 2. セッション作成は呼ばれなかったか
+            expect(mockedCreateSession).not.toHaveBeenCalled();
+
+            // 3. リダイレクトは呼ばれなかったか
+            expect(mockedRedirect).not.toHaveBeenCalled();
+        });
+
+        it('should not create session or redirect if password is invalid', async () => {
+            const validData = { email: 'test@example.com', password: 'wrongpassword' };
+            mockedValidateSigninFormData.mockReturnValue(validData);
+            const fetchedUser = {
+                name: 'Test User',
+                email: validData.email,
+                hashedPassword: 'hashed_password'
+            };
+            mockedDbFetchUserByEmail.mockResolvedValue(fetchedUser);
+            mockedValidatePassword.mockResolvedValue(false);
+
+            const formData = new FormData();
+            await login({ errors: {} }, formData);
+
+            // 1. ユーザー取得が呼ばれたか
+            expect(mockedDbFetchUserByEmail).toHaveBeenCalledWith(validData.email);
+
+            // 2. セッション作成は呼ばれなかったか
+            expect(mockedCreateSession).not.toHaveBeenCalled();
+
+            // 3. リダイレクトは呼ばれなかったか
+            expect(mockedRedirect).not.toHaveBeenCalled();
+        });
+
+        it('refuses invalid form data. should not perform create session or redirect.', async () => {
+            const errors = { email: ['Email is required'], password: ['Password is required'] };
+            mockedValidateSigninFormData.mockReturnValue({ errors });
+
+            const formData = new FormData();
+            const result = await login({ errors: {} }, formData);
+
+            expect(result).toEqual({ errors });
+            expect(mockedDbFetchUserByEmail).not.toHaveBeenCalled();
             expect(mockedCreateSession).not.toHaveBeenCalled();
             expect(mockedRedirect).not.toHaveBeenCalled();
         });

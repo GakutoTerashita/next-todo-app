@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 import { createSession, deleteSession } from '@/lib/session';
 import { validateSigninFormData, validateSignupFormData } from './helpers/validateFormData';
 import { redirect } from 'next/navigation';
-import validatePassword from './helpers/validatePassword';
+import { validatePassword } from './helpers/validatePassword';
 import { dbFetchUserByEmail, dbRegisterUser } from '@/lib/db/users';
 import { LoginFormState, SignupFormState } from './types';
 import { handleLoginError, handleSignupError } from './helpers/handleAuthError';
@@ -60,7 +60,7 @@ export const login = async (
             };
         }
 
-        if (!validatePassword(validatedData.password, user.hashedPassword)) {
+        if (!(await validatePassword(validatedData.password, user.hashedPassword))) {
             return {
                 errors: {
                     password: ['Invalid password'],
