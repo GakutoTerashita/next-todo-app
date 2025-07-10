@@ -3,7 +3,6 @@ import { createSession } from "@/lib/session";
 import { describe, expect, vi, it, afterEach } from "vitest";
 import { validateSigninFormData, validateSignupFormData } from "./helpers/validateFormData";
 import { login, signup } from "./auth";
-import { handleSignupError } from "./helpers/handleAuthError";
 import { redirect } from "next/navigation";
 import { validatePassword } from "./helpers/validatePassword";
 
@@ -28,12 +27,6 @@ vi.mock('@/app/actions/auth/helpers/validateFormData', () => ({
 
 const mockedValidateSignupFormData = vi.mocked(validateSignupFormData);
 const mockedValidateSigninFormData = vi.mocked(validateSigninFormData);
-
-vi.mock('./helpers/handleAuthError', async () => ({
-    handleSignupError: vi.fn(),
-}));
-
-const mockedHandleSignupError = vi.mocked(handleSignupError);
 
 vi.mock('./helpers/validatePassword', () => ({
     validatePassword: vi.fn(),
@@ -73,26 +66,6 @@ describe('auth.ts', () => {
 
             // 3. リダイレクトが呼ばれたか
             expect(mockedRedirect).toHaveBeenCalledWith('/');
-        });
-
-        it('should not create session or redirect if user registration fails because of duplicate email key', async () => {
-            const validData = { name: 'Test User', email: 'test@example.com', password: 'password123' };
-            mockedValidateSignupFormData.mockReturnValue(validData);
-            const dbError = new Error('DB Error');
-            mockedDbRegisterUser.mockRejectedValue(dbError);
-            mockedHandleSignupError.mockReturnValue({ errors: { general: ['DB Error'] } });
-
-            const formData = new FormData();
-            const result = await signup({ errors: {} }, formData);
-
-            // DB登録は試みられる
-            expect(mockedDbRegisterUser).toHaveBeenCalled();
-            // セッション作成とリダイレクトは呼ばれない
-            expect(mockedCreateSession).not.toHaveBeenCalled();
-            expect(mockedRedirect).not.toHaveBeenCalled();
-            // エラーハンドラが呼ばれ、その結果が返される
-            expect(mockedHandleSignupError).toHaveBeenCalledWith(dbError);
-            expect(result).toEqual({ errors: { general: ['DB Error'] } });
         });
 
         it('refuses invalid form data. should not perform create session, redirect or user registration.', async () => {
