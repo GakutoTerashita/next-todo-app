@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { dbFetchUserByEmail, dbRegisterUser } from "./users";
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import { setupTestDb, teardownTestDB } from "./test-utils";
 
 let prisma: PrismaClient;
@@ -55,6 +55,22 @@ describe('dbRegisterUser', () => {
         expect(regUser).toHaveProperty('name', user.name);
         expect(regUser).toHaveProperty('email', user.email);
         expect(regUser).toHaveProperty('hashedPassword', user.hashedPassword);
+    });
+
+    it('throws an error if attempt user\'s email already exists', async () => {
+        const user = {
+            name: 'Jane Doe',
+            email: 'jane@example.com',
+            hashedPassword: 'password456',
+        };
+        await dbRegisterUser(user);
+
+        const another = {
+            name: 'Jane Smith',
+            email: 'jane@example.com',
+            hashedPassword: 'password789',
+        };
+        await expect(dbRegisterUser(another)).rejects.toThrowError(Prisma.PrismaClientKnownRequestError);
     });
 });
 
