@@ -1,7 +1,7 @@
 "use server";
 import bcrypt from 'bcrypt';
 import { createSession, deleteSession } from '@/lib/session';
-import { ValidatedSignupData, validateSigninFormData, validateSignupFormData } from './helpers/validateFormData';
+import { validateSigninFormData, validateSignupFormData } from './helpers/validateFormData';
 import { redirect } from 'next/navigation';
 import validatePassword from './helpers/validatePassword';
 import { dbFetchUserByEmail, dbRegisterUser } from '@/lib/db/users';
@@ -30,20 +30,6 @@ export const handleSignupError = (
     };
 };
 
-export const registerUserAndCreateSession = async (
-    validatedSignupData: ValidatedSignupData
-): Promise<void> => {
-    const hashedPassword = await bcrypt.hash(validatedSignupData.password, 10);
-
-    const registeredUser = await dbRegisterUser({
-        name: validatedSignupData.name,
-        email: validatedSignupData.email,
-        hashedPassword,
-    });
-
-    await createSession(registeredUser.name);
-};
-
 export const signup = async (
     state: SignupFormState,
     formData: FormData
@@ -57,7 +43,15 @@ export const signup = async (
     }
 
     try {
-        await registerUserAndCreateSession(validatedData);
+        const hashedPassword = await bcrypt.hash(validatedData.password, 10);
+
+        const registeredUser = await dbRegisterUser({
+            name: validatedData.name,
+            email: validatedData.email,
+            hashedPassword,
+        });
+
+        await createSession(registeredUser.name);
     } catch (error) {
         return handleSignupError(error);
     }
