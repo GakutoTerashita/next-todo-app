@@ -62,7 +62,7 @@ describe('auth.ts', () => {
             }));
 
             // 2. セッション作成が呼ばれたか
-            expect(mockedCreateSession).toHaveBeenCalledWith(registeredUser.name);
+            expect(mockedCreateSession).toHaveBeenCalledWith(registeredUser.email);
 
             // 3. リダイレクトが呼ばれたか
             expect(mockedRedirect).toHaveBeenCalledWith('/');
@@ -105,7 +105,7 @@ describe('auth.ts', () => {
             expect(mockedDbFetchUserByEmail).toHaveBeenCalledWith(validData.email);
 
             // 2. セッション作成が呼ばれたか
-            expect(mockedCreateSession).toHaveBeenCalledWith(fetchedUser.name);
+            expect(mockedCreateSession).toHaveBeenCalledWith(fetchedUser.email);
 
             // 3. リダイレクトが呼ばれたか
             expect(mockedRedirect).toHaveBeenCalledWith('/');

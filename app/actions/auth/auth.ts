@@ -29,7 +29,7 @@ export const signup = async (
             hashedPassword,
         });
 
-        await createSession(registeredUser.name);
+        await createSession(registeredUser.email);
     } catch (error) {
         return handleSignupError(error);
     }
@@ -68,7 +68,7 @@ export const login = async (
             };
         }
 
-        await createSession(user.name);
+        await createSession(user.email);
     } catch (error) {
         return handleLoginError(error);
     }
